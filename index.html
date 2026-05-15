@@ -222,6 +222,42 @@ a {
   padding: 0.95rem 1rem;
 }
 
+.evaluator-panel {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 18px;
+}
+
+.report-filter {
+  display: grid;
+  gap: 0.35rem;
+  min-width: 220px;
+}
+
+.report-filter span {
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.report-filter select {
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(30, 41, 59, 0.14);
+  border-radius: 14px;
+  color: var(--ink);
+  min-height: 44px;
+  padding: 0 0.85rem;
+}
+
+.evaluator-metric-strip {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin-bottom: 0;
+}
+
+.evaluator-detail {
+  margin: 0;
+}
+
 .inline-code {
   background: rgba(30, 41, 59, 0.08);
   border-radius: 8px;
@@ -739,6 +775,7 @@ a {
 
 @media (max-width: 1280px) {
   .metric-strip,
+  .evaluator-metric-strip,
   .visual-grid,
   .detail-metrics,
   .detail-split,
@@ -758,6 +795,7 @@ a {
   }
 
   .metric-strip,
+  .evaluator-metric-strip,
   .insight-strip,
   .visual-grid,
   .filters,
@@ -812,6 +850,9 @@ a {
             <a id="review-bookmarklet-link" class="secondary-button" href="#"
               >Sync Review Data</a
             >
+            <a id="evaluator-bookmarklet-link" class="secondary-button" href="#"
+              >Sync Evaluator Email</a
+            >
             <button id="refresh-data" class="secondary-button" type="button">
               Refresh Board
             </button>
@@ -841,6 +882,14 @@ a {
               <dt>Review source</dt>
               <dd id="review-sync-source">—</dd>
             </div>
+            <div>
+              <dt>Evaluator sync</dt>
+              <dd id="evaluator-sync-mode">—</dd>
+            </div>
+            <div>
+              <dt>Evaluator source</dt>
+              <dd id="evaluator-sync-source">—</dd>
+            </div>
           </dl>
         </aside>
       </header>
@@ -854,6 +903,29 @@ a {
         your review dashboard and run
         <span class="inline-code">Sync Review Data</span> to refresh the
         correlation model and graduation critics with the latest review state.
+        To load the daily evaluator totals, open the Gmail thread for
+        <span class="inline-code">Form Template Campaign Evaluator Daily Report</span>
+        and run
+        <span class="inline-code">Sync Evaluator Email</span>.
+      </section>
+
+      <section class="panel evaluator-panel">
+        <div class="panel-header">
+          <div>
+            <p class="section-label">Daily Evaluator Email</p>
+            <h2>Campaign evaluator summary with report-date filter</h2>
+          </div>
+
+          <label class="report-filter">
+            <span>Report date</span>
+            <select id="report-date-filter">
+              <option value="">No evaluator dates synced</option>
+            </select>
+          </label>
+        </div>
+
+        <div id="evaluator-metric-strip" class="metric-strip evaluator-metric-strip"></div>
+        <p id="evaluator-detail" class="evaluator-detail muted"></p>
       </section>
 
       <section id="metric-strip" class="metric-strip"></section>
@@ -1005,14 +1077,16 @@ a {
 
     <script>
 window.__ADCRAFT_STATIC_MODE__ = true;
-window.__ADCRAFT_EMBEDDED_PAYLOAD__ = {"campaignState":{"version":1,"meta":{"syncedAt":"2026-05-15T09:15:00.000Z","startDate":"2025-12-12","endDate":"2025-12-15","phaseType":"2","sourcePage":"https://support.jotform.com/admn/dashboards/data/adcraft-dashboard/ugc/campaign-performance-details","campaignCount":7,"templateCount":14},"campaignRows":[{"campaignId":"ugc-flow-2025-12-12","campaignName":"#Ugc Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ugc_flow","generatedTemplates":100,"graduatedTemplates":27,"trashedTemplates":73,"totalTemplateClones":14,"totalSignups":1,"totalP30":0,"organicTraffic":28,"gscClicks":37},{"campaignId":"ai-pool-2025-12-12","campaignName":"#Ai Pool Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ai_pool","generatedTemplates":100,"graduatedTemplates":20,"trashedTemplates":80,"totalTemplateClones":6,"totalSignups":0,"totalP30":0,"organicTraffic":21,"gscClicks":16},{"campaignId":"ugc-flow-2025-12-13","campaignName":"#Ugc Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ugc_flow","generatedTemplates":100,"graduatedTemplates":33,"trashedTemplates":67,"totalTemplateClones":11,"totalSignups":3,"totalP30":0,"organicTraffic":41,"gscClicks":58},{"campaignId":"ai-pool-2025-12-13","campaignName":"#Ai Pool Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ai_pool","generatedTemplates":100,"graduatedTemplates":18,"trashedTemplates":82,"totalTemplateClones":4,"totalSignups":0,"totalP30":0,"organicTraffic":12,"gscClicks":11},{"campaignId":"ugc-flow-2025-12-14","campaignName":"#Ugc Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ugc_flow","generatedTemplates":100,"graduatedTemplates":38,"trashedTemplates":62,"totalTemplateClones":13,"totalSignups":1,"totalP30":0,"organicTraffic":62,"gscClicks":72},{"campaignId":"ai-pool-2025-12-14","campaignName":"#Ai Pool Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ai_pool","generatedTemplates":100,"graduatedTemplates":14,"trashedTemplates":86,"totalTemplateClones":3,"totalSignups":0,"totalP30":0,"organicTraffic":7,"gscClicks":9},{"campaignId":"ugc-flow-2025-12-15","campaignName":"#Ugc Flow- [2025-12-15]","campaignCreationDate":"2025-12-15","category":"ugc_flow","generatedTemplates":100,"graduatedTemplates":41,"trashedTemplates":59,"totalTemplateClones":17,"totalSignups":6,"totalP30":0,"organicTraffic":55,"gscClicks":64}],"templateRows":[{"campaignId":"ugc-flow-2025-12-12","campaignName":"#Ugc Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ugc_flow","templateId":"251212001","templateUrl":"https://www.jotform.com/form-templates/warehouse-safety-inspection-form","title":"Warehouse Safety Inspection Form","isGraduated":true,"gscClicks30d":12,"organicSessions":10,"totalCloneCount30d":2,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-12","campaignName":"#Ugc Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ugc_flow","templateId":"251212002","templateUrl":"https://www.jotform.com/form-templates/landscaping-bid-request-form","title":"Landscaping Bid Request Form","isGraduated":true,"gscClicks30d":9,"organicSessions":6,"totalCloneCount30d":1,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-12","campaignName":"#Ai Pool Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ai_pool","templateId":"251212101","templateUrl":"https://www.jotform.com/form-templates/patient-history-check-in-form","title":"Patient History Check-In Form","isGraduated":true,"gscClicks30d":8,"organicSessions":5,"totalCloneCount30d":1,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-12","campaignName":"#Ai Pool Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ai_pool","templateId":"251212102","templateUrl":"https://www.jotform.com/form-templates/motor-controller-repair-estimate-form","title":"Motor Controller Repair Estimate Form","isGraduated":false,"gscClicks30d":1,"organicSessions":0,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-13","campaignName":"#Ugc Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ugc_flow","templateId":"251213001","templateUrl":"https://www.jotform.com/form-templates/contractor-onboarding-form","title":"Contractor Onboarding Form","isGraduated":true,"gscClicks30d":13,"organicSessions":9,"totalCloneCount30d":2,"signupCount30d":1,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-13","campaignName":"#Ugc Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ugc_flow","templateId":"251213002","templateUrl":"https://www.jotform.com/form-templates/client-kickoff-brief-form","title":"Client Kickoff Brief Form","isGraduated":true,"gscClicks30d":10,"organicSessions":8,"totalCloneCount30d":2,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-13","campaignName":"#Ai Pool Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ai_pool","templateId":"251213101","templateUrl":"https://www.jotform.com/form-templates/high-voltage-incident-report-form","title":"High Voltage Incident Report Form","isGraduated":true,"gscClicks30d":6,"organicSessions":3,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-13","campaignName":"#Ai Pool Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ai_pool","templateId":"251213102","templateUrl":"https://www.jotform.com/form-templates/backup-generator-diagnostic-form","title":"Backup Generator Diagnostic Form","isGraduated":false,"gscClicks30d":1,"organicSessions":0,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-14","campaignName":"#Ugc Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ugc_flow","templateId":"251214001","templateUrl":"https://www.jotform.com/form-templates/property-handover-checklist-form","title":"Property Handover Checklist Form","isGraduated":true,"gscClicks30d":18,"organicSessions":14,"totalCloneCount30d":3,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-14","campaignName":"#Ugc Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ugc_flow","templateId":"251214002","templateUrl":"https://www.jotform.com/form-templates/roof-leak-assessment-form","title":"Roof Leak Assessment Form","isGraduated":true,"gscClicks30d":11,"organicSessions":8,"totalCloneCount30d":2,"signupCount30d":1,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-14","campaignName":"#Ai Pool Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ai_pool","templateId":"251214101","templateUrl":"https://www.jotform.com/form-templates/turbine-maintenance-authorization-form","title":"Turbine Maintenance Authorization Form","isGraduated":true,"gscClicks30d":5,"organicSessions":2,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-14","campaignName":"#Ai Pool Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ai_pool","templateId":"251214102","templateUrl":"https://www.jotform.com/form-templates/boiler-valve-calibration-form","title":"Boiler Valve Calibration Form","isGraduated":false,"gscClicks30d":2,"organicSessions":1,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-15","campaignName":"#Ugc Flow- [2025-12-15]","campaignCreationDate":"2025-12-15","category":"ugc_flow","templateId":"251215001","templateUrl":"https://www.jotform.com/form-templates/roofing-supplier-quote-form","title":"Roofing Supplier Quote Form","isGraduated":true,"gscClicks30d":20,"organicSessions":16,"totalCloneCount30d":4,"signupCount30d":2,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-15","campaignName":"#Ugc Flow- [2025-12-15]","campaignCreationDate":"2025-12-15","category":"ugc_flow","templateId":"251215002","templateUrl":"https://www.jotform.com/form-templates/kitchen-renovation-intake-form","title":"Kitchen Renovation Intake Form","isGraduated":true,"gscClicks30d":14,"organicSessions":11,"totalCloneCount30d":3,"signupCount30d":1,"p30Count30d":0}]},"reviewState":{"version":1,"updatedAt":"2026-05-15T08:55:00.000Z","updatedBy":"Ceren","sourceFileName":"sample-review-state","items":[{"id":"251212001","templateId":"251212001","templateUrl":"https://www.jotform.com/form-templates/warehouse-safety-inspection-form","campaignName":"#Ugc Flow- [2025-12-12]","displayCampaign":"ugc_flow","reviewDecision":"Pass","reviewStatus":"Reviewed","reviewNotes":"Strong use-case match and no obvious structural issues.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251212002","templateId":"251212002","templateUrl":"https://www.jotform.com/form-templates/landscaping-bid-request-form","campaignName":"#Ugc Flow- [2025-12-12]","displayCampaign":"ugc_flow","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"FAQ is too generic and does not match the contractor bid flow well enough.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Fail","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251212101","templateId":"251212101","templateUrl":"https://www.jotform.com/form-templates/patient-history-check-in-form","campaignName":"#Ai Pool Flow- [2025-12-12]","displayCampaign":"ai_pool","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"Template is short for the use case and misses expected intake structure.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Fail","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251213001","templateId":"251213001","templateUrl":"https://www.jotform.com/form-templates/contractor-onboarding-form","campaignName":"#Ugc Flow- [2025-12-13]","displayCampaign":"ugc_flow","reviewDecision":"Pass","reviewStatus":"Reviewed","reviewNotes":"Solid structure and appropriate fields for the workflow.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251213002","templateId":"251213002","templateUrl":"https://www.jotform.com/form-templates/client-kickoff-brief-form","campaignName":"#Ugc Flow- [2025-12-13]","displayCampaign":"ugc_flow","reviewDecision":"Pass","reviewStatus":"Reviewed","reviewNotes":"Review clean and aligned with the template title and use case.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251213101","templateId":"251213101","templateUrl":"https://www.jotform.com/form-templates/high-voltage-incident-report-form","campaignName":"#Ai Pool Flow- [2025-12-13]","displayCampaign":"ai_pool","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"The use case leans into sensitive operational incident details that should be tightened.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Fail"}},{"id":"251214001","templateId":"251214001","templateUrl":"https://www.jotform.com/form-templates/property-handover-checklist-form","campaignName":"#Ugc Flow- [2025-12-14]","displayCampaign":"ugc_flow","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"Use-case structure is close, but the title and a key handover section still need cleanup.","checks":{"titleReview":"Fail","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Fail","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251214002","templateId":"251214002","templateUrl":"https://www.jotform.com/form-templates/roof-leak-assessment-form","campaignName":"#Ugc Flow- [2025-12-14]","displayCampaign":"ugc_flow","reviewDecision":"Pending","reviewStatus":"Pending","reviewNotes":"","checks":{"titleReview":"Pending","h1EndsWithForm":"Pending","faqReview":"Pending","availableFieldsReview":"Pending","formUseCaseReview":"Pending","fieldCountReview":"Pending","consentRuleReview":"Pending","sensitiveFieldsReview":"Pending"}},{"id":"251214101","templateId":"251214101","templateUrl":"https://www.jotform.com/form-templates/turbine-maintenance-authorization-form","campaignName":"#Ai Pool Flow- [2025-12-14]","displayCampaign":"ai_pool","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"The form stays too short for the use case and needs stronger operational fields.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Fail","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251215001","templateId":"251215001","templateUrl":"https://www.jotform.com/form-templates/roofing-supplier-quote-form","campaignName":"#Ugc Flow- [2025-12-15]","displayCampaign":"ugc_flow","reviewDecision":"Pass","reviewStatus":"Reviewed","reviewNotes":"Strong conversion intent and a clean quote structure.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251215002","templateId":"251215002","templateUrl":"https://www.jotform.com/form-templates/kitchen-renovation-intake-form","campaignName":"#Ugc Flow- [2025-12-15]","displayCampaign":"ugc_flow","reviewDecision":"Pending","reviewStatus":"Pending","reviewNotes":"","checks":{"titleReview":"Pending","h1EndsWithForm":"Pending","faqReview":"Pending","availableFieldsReview":"Pending","formUseCaseReview":"Pending","fieldCountReview":"Pending","consentRuleReview":"Pending","sensitiveFieldsReview":"Pending"}}]}};
+window.__ADCRAFT_EMBEDDED_PAYLOAD__ = {"campaignState":{"version":1,"meta":{"syncedAt":"2026-05-15T09:15:00.000Z","startDate":"2025-12-12","endDate":"2025-12-15","phaseType":"2","sourcePage":"https://support.jotform.com/admn/dashboards/data/adcraft-dashboard/ugc/campaign-performance-details","campaignCount":7,"templateCount":14},"campaignRows":[{"campaignId":"ugc-flow-2025-12-12","campaignName":"#Ugc Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ugc_flow","generatedTemplates":100,"graduatedTemplates":27,"trashedTemplates":73,"totalTemplateClones":14,"totalSignups":1,"totalP30":0,"organicTraffic":28,"gscClicks":37},{"campaignId":"ai-pool-2025-12-12","campaignName":"#Ai Pool Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ai_pool","generatedTemplates":100,"graduatedTemplates":20,"trashedTemplates":80,"totalTemplateClones":6,"totalSignups":0,"totalP30":0,"organicTraffic":21,"gscClicks":16},{"campaignId":"ugc-flow-2025-12-13","campaignName":"#Ugc Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ugc_flow","generatedTemplates":100,"graduatedTemplates":33,"trashedTemplates":67,"totalTemplateClones":11,"totalSignups":3,"totalP30":0,"organicTraffic":41,"gscClicks":58},{"campaignId":"ai-pool-2025-12-13","campaignName":"#Ai Pool Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ai_pool","generatedTemplates":100,"graduatedTemplates":18,"trashedTemplates":82,"totalTemplateClones":4,"totalSignups":0,"totalP30":0,"organicTraffic":12,"gscClicks":11},{"campaignId":"ugc-flow-2025-12-14","campaignName":"#Ugc Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ugc_flow","generatedTemplates":100,"graduatedTemplates":38,"trashedTemplates":62,"totalTemplateClones":13,"totalSignups":1,"totalP30":0,"organicTraffic":62,"gscClicks":72},{"campaignId":"ai-pool-2025-12-14","campaignName":"#Ai Pool Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ai_pool","generatedTemplates":100,"graduatedTemplates":14,"trashedTemplates":86,"totalTemplateClones":3,"totalSignups":0,"totalP30":0,"organicTraffic":7,"gscClicks":9},{"campaignId":"ugc-flow-2025-12-15","campaignName":"#Ugc Flow- [2025-12-15]","campaignCreationDate":"2025-12-15","category":"ugc_flow","generatedTemplates":100,"graduatedTemplates":41,"trashedTemplates":59,"totalTemplateClones":17,"totalSignups":6,"totalP30":0,"organicTraffic":55,"gscClicks":64}],"templateRows":[{"campaignId":"ugc-flow-2025-12-12","campaignName":"#Ugc Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ugc_flow","templateId":"251212001","templateUrl":"https://www.jotform.com/form-templates/warehouse-safety-inspection-form","title":"Warehouse Safety Inspection Form","isGraduated":true,"gscClicks30d":12,"organicSessions":10,"totalCloneCount30d":2,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-12","campaignName":"#Ugc Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ugc_flow","templateId":"251212002","templateUrl":"https://www.jotform.com/form-templates/landscaping-bid-request-form","title":"Landscaping Bid Request Form","isGraduated":true,"gscClicks30d":9,"organicSessions":6,"totalCloneCount30d":1,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-12","campaignName":"#Ai Pool Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ai_pool","templateId":"251212101","templateUrl":"https://www.jotform.com/form-templates/patient-history-check-in-form","title":"Patient History Check-In Form","isGraduated":true,"gscClicks30d":8,"organicSessions":5,"totalCloneCount30d":1,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-12","campaignName":"#Ai Pool Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ai_pool","templateId":"251212102","templateUrl":"https://www.jotform.com/form-templates/motor-controller-repair-estimate-form","title":"Motor Controller Repair Estimate Form","isGraduated":false,"gscClicks30d":1,"organicSessions":0,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-13","campaignName":"#Ugc Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ugc_flow","templateId":"251213001","templateUrl":"https://www.jotform.com/form-templates/contractor-onboarding-form","title":"Contractor Onboarding Form","isGraduated":true,"gscClicks30d":13,"organicSessions":9,"totalCloneCount30d":2,"signupCount30d":1,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-13","campaignName":"#Ugc Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ugc_flow","templateId":"251213002","templateUrl":"https://www.jotform.com/form-templates/client-kickoff-brief-form","title":"Client Kickoff Brief Form","isGraduated":true,"gscClicks30d":10,"organicSessions":8,"totalCloneCount30d":2,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-13","campaignName":"#Ai Pool Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ai_pool","templateId":"251213101","templateUrl":"https://www.jotform.com/form-templates/high-voltage-incident-report-form","title":"High Voltage Incident Report Form","isGraduated":true,"gscClicks30d":6,"organicSessions":3,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-13","campaignName":"#Ai Pool Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ai_pool","templateId":"251213102","templateUrl":"https://www.jotform.com/form-templates/backup-generator-diagnostic-form","title":"Backup Generator Diagnostic Form","isGraduated":false,"gscClicks30d":1,"organicSessions":0,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-14","campaignName":"#Ugc Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ugc_flow","templateId":"251214001","templateUrl":"https://www.jotform.com/form-templates/property-handover-checklist-form","title":"Property Handover Checklist Form","isGraduated":true,"gscClicks30d":18,"organicSessions":14,"totalCloneCount30d":3,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-14","campaignName":"#Ugc Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ugc_flow","templateId":"251214002","templateUrl":"https://www.jotform.com/form-templates/roof-leak-assessment-form","title":"Roof Leak Assessment Form","isGraduated":true,"gscClicks30d":11,"organicSessions":8,"totalCloneCount30d":2,"signupCount30d":1,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-14","campaignName":"#Ai Pool Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ai_pool","templateId":"251214101","templateUrl":"https://www.jotform.com/form-templates/turbine-maintenance-authorization-form","title":"Turbine Maintenance Authorization Form","isGraduated":true,"gscClicks30d":5,"organicSessions":2,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-14","campaignName":"#Ai Pool Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ai_pool","templateId":"251214102","templateUrl":"https://www.jotform.com/form-templates/boiler-valve-calibration-form","title":"Boiler Valve Calibration Form","isGraduated":false,"gscClicks30d":2,"organicSessions":1,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-15","campaignName":"#Ugc Flow- [2025-12-15]","campaignCreationDate":"2025-12-15","category":"ugc_flow","templateId":"251215001","templateUrl":"https://www.jotform.com/form-templates/roofing-supplier-quote-form","title":"Roofing Supplier Quote Form","isGraduated":true,"gscClicks30d":20,"organicSessions":16,"totalCloneCount30d":4,"signupCount30d":2,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-15","campaignName":"#Ugc Flow- [2025-12-15]","campaignCreationDate":"2025-12-15","category":"ugc_flow","templateId":"251215002","templateUrl":"https://www.jotform.com/form-templates/kitchen-renovation-intake-form","title":"Kitchen Renovation Intake Form","isGraduated":true,"gscClicks30d":14,"organicSessions":11,"totalCloneCount30d":3,"signupCount30d":1,"p30Count30d":0}]},"reviewState":{"version":1,"updatedAt":"2026-05-15T08:55:00.000Z","updatedBy":"Ceren","sourceFileName":"sample-review-state","items":[{"id":"251212001","templateId":"251212001","templateUrl":"https://www.jotform.com/form-templates/warehouse-safety-inspection-form","campaignName":"#Ugc Flow- [2025-12-12]","displayCampaign":"ugc_flow","reviewDecision":"Pass","reviewStatus":"Reviewed","reviewNotes":"Strong use-case match and no obvious structural issues.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251212002","templateId":"251212002","templateUrl":"https://www.jotform.com/form-templates/landscaping-bid-request-form","campaignName":"#Ugc Flow- [2025-12-12]","displayCampaign":"ugc_flow","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"FAQ is too generic and does not match the contractor bid flow well enough.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Fail","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251212101","templateId":"251212101","templateUrl":"https://www.jotform.com/form-templates/patient-history-check-in-form","campaignName":"#Ai Pool Flow- [2025-12-12]","displayCampaign":"ai_pool","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"Template is short for the use case and misses expected intake structure.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Fail","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251213001","templateId":"251213001","templateUrl":"https://www.jotform.com/form-templates/contractor-onboarding-form","campaignName":"#Ugc Flow- [2025-12-13]","displayCampaign":"ugc_flow","reviewDecision":"Pass","reviewStatus":"Reviewed","reviewNotes":"Solid structure and appropriate fields for the workflow.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251213002","templateId":"251213002","templateUrl":"https://www.jotform.com/form-templates/client-kickoff-brief-form","campaignName":"#Ugc Flow- [2025-12-13]","displayCampaign":"ugc_flow","reviewDecision":"Pass","reviewStatus":"Reviewed","reviewNotes":"Review clean and aligned with the template title and use case.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251213101","templateId":"251213101","templateUrl":"https://www.jotform.com/form-templates/high-voltage-incident-report-form","campaignName":"#Ai Pool Flow- [2025-12-13]","displayCampaign":"ai_pool","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"The use case leans into sensitive operational incident details that should be tightened.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Fail"}},{"id":"251214001","templateId":"251214001","templateUrl":"https://www.jotform.com/form-templates/property-handover-checklist-form","campaignName":"#Ugc Flow- [2025-12-14]","displayCampaign":"ugc_flow","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"Use-case structure is close, but the title and a key handover section still need cleanup.","checks":{"titleReview":"Fail","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Fail","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251214002","templateId":"251214002","templateUrl":"https://www.jotform.com/form-templates/roof-leak-assessment-form","campaignName":"#Ugc Flow- [2025-12-14]","displayCampaign":"ugc_flow","reviewDecision":"Pending","reviewStatus":"Pending","reviewNotes":"","checks":{"titleReview":"Pending","h1EndsWithForm":"Pending","faqReview":"Pending","availableFieldsReview":"Pending","formUseCaseReview":"Pending","fieldCountReview":"Pending","consentRuleReview":"Pending","sensitiveFieldsReview":"Pending"}},{"id":"251214101","templateId":"251214101","templateUrl":"https://www.jotform.com/form-templates/turbine-maintenance-authorization-form","campaignName":"#Ai Pool Flow- [2025-12-14]","displayCampaign":"ai_pool","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"The form stays too short for the use case and needs stronger operational fields.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Fail","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251215001","templateId":"251215001","templateUrl":"https://www.jotform.com/form-templates/roofing-supplier-quote-form","campaignName":"#Ugc Flow- [2025-12-15]","displayCampaign":"ugc_flow","reviewDecision":"Pass","reviewStatus":"Reviewed","reviewNotes":"Strong conversion intent and a clean quote structure.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251215002","templateId":"251215002","templateUrl":"https://www.jotform.com/form-templates/kitchen-renovation-intake-form","campaignName":"#Ugc Flow- [2025-12-15]","displayCampaign":"ugc_flow","reviewDecision":"Pending","reviewStatus":"Pending","reviewNotes":"","checks":{"titleReview":"Pending","h1EndsWithForm":"Pending","faqReview":"Pending","availableFieldsReview":"Pending","formUseCaseReview":"Pending","fieldCountReview":"Pending","consentRuleReview":"Pending","sensitiveFieldsReview":"Pending"}}]},"evaluatorReports":[{"id":"evaluator-2026-05-14","reportDate":"2026-05-14","generatedAt":"2026-05-14T22:02:02","campaignsProcessed":210,"campaignsClosed":0,"templatesGraduated":0,"templatesEliminated":0,"templatesTrash":0,"clickThreshold":5,"sourceLabel":"Bundled evaluator sample","subject":"[AdCraft] Form Template Campaign Evaluator Daily Report - 2026-05-14"}]};
 </script>
 <script type="module">
 const SAMPLE_DASHBOARD_STATE_PATH = "./data/sample-dashboard-state.json";
 const SAMPLE_REVIEW_STATE_PATH = "./data/sample-review-state.json";
+const SAMPLE_EVALUATOR_REPORTS_PATH = "./data/sample-evaluator-reports.json";
 const API_ENDPOINT = "./api/dashboard-data";
 const LOCAL_SNAPSHOT_KEY = "adcraft-campaign-live-snapshot-v1";
 const LOCAL_REVIEW_SNAPSHOT_KEY = "adcraft-review-live-state-v1";
+const LOCAL_EVALUATOR_REPORTS_KEY = "adcraft-evaluator-reports-v1";
 const EMBEDDED_PAYLOAD = readEmbeddedPayload();
 const STATIC_DEPLOY = Boolean(window.__ADCRAFT_STATIC_MODE__);
 
@@ -1074,10 +1148,16 @@ const elements = {
   syncSource: document.getElementById("sync-source"),
   bookmarkletLink: document.getElementById("bookmarklet-link"),
   reviewBookmarkletLink: document.getElementById("review-bookmarklet-link"),
+  evaluatorBookmarkletLink: document.getElementById("evaluator-bookmarklet-link"),
   reviewSyncMode: document.getElementById("review-sync-mode"),
   reviewSyncSource: document.getElementById("review-sync-source"),
+  evaluatorSyncMode: document.getElementById("evaluator-sync-mode"),
+  evaluatorSyncSource: document.getElementById("evaluator-sync-source"),
   refreshData: document.getElementById("refresh-data"),
   resetSample: document.getElementById("reset-sample"),
+  reportDateFilter: document.getElementById("report-date-filter"),
+  evaluatorMetricStrip: document.getElementById("evaluator-metric-strip"),
+  evaluatorDetail: document.getElementById("evaluator-detail"),
   metricStrip: document.getElementById("metric-strip"),
   insightStrip: document.getElementById("insight-strip"),
   funnelCaption: document.getElementById("funnel-caption"),
@@ -1113,6 +1193,8 @@ const state = {
   globalPatterns: [],
   correlation: null,
   reviewStatePayload: { items: [] },
+  evaluatorReports: [],
+  selectedEvaluatorDate: "",
   sync: {
     mode: "loading",
     detail: "Checking whether a shared campaign snapshot is available.",
@@ -1123,6 +1205,12 @@ const state = {
   reviewSync: {
     mode: "sample",
     sourceLabel: "Bundled review sample",
+    sourceUrl: "",
+    syncedAt: "",
+  },
+  evaluatorSync: {
+    mode: "sample",
+    sourceLabel: "No evaluator reports synced yet",
     sourceUrl: "",
     syncedAt: "",
   },
@@ -1140,7 +1228,9 @@ async function boot() {
   bindEvents();
   elements.bookmarkletLink.href = createBookmarkletHref(window.location.href);
   elements.reviewBookmarkletLink.href = createReviewBookmarkletHref(window.location.href);
+  elements.evaluatorBookmarkletLink.href = createEvaluatorBookmarkletHref(window.location.href);
   await loadDashboardData();
+  applyEvaluatorReportsIfNewer();
   applyReviewSnapshotIfNewer();
   applyBrowserSnapshotIfNewer();
 }
@@ -1148,9 +1238,11 @@ async function boot() {
 function bindEvents() {
   window.addEventListener("message", handleLiveSnapshotMessage);
   window.addEventListener("message", handleReviewSnapshotMessage);
+  window.addEventListener("message", handleEvaluatorSnapshotMessage);
 
   elements.refreshData.addEventListener("click", async () => {
     await loadDashboardData();
+    applyEvaluatorReportsIfNewer();
     applyReviewSnapshotIfNewer();
     applyBrowserSnapshotIfNewer();
   });
@@ -1171,6 +1263,11 @@ function bindEvents() {
 
   elements.riskFilter.addEventListener("change", (event) => {
     state.filters.risk = event.target.value;
+    render();
+  });
+
+  elements.reportDateFilter.addEventListener("change", (event) => {
+    state.selectedEvaluatorDate = event.target.value;
     render();
   });
 }
@@ -1213,13 +1310,18 @@ async function loadSamplePayload() {
     }
   }
 
+  const evaluatorReports = embeddedPayload?.evaluatorReports
+    ? embeddedPayload.evaluatorReports
+    : await fetchJson(SAMPLE_EVALUATOR_REPORTS_PATH);
+
   return {
     campaignState,
     reviewState,
+    evaluatorReports,
     sync: {
       mode: "sample",
       detail: STATIC_DEPLOY
-        ? "Static mode is active. Run Sync Campaign Data on the internal dashboard and Sync Review Data on the review dashboard to replace these demo values in this browser."
+        ? "Static mode is active. Run Sync Campaign Data on the internal dashboard, Sync Review Data on the review dashboard, and Sync Evaluator Email in Gmail to replace these demo values in this browser."
         : "Sample mode is active. Deploy this app on Vercel, connect the shared review store, and run the bookmarklet from the internal Campaign Details page to replace these demo values.",
       sourceLabel: "Bundled sample",
       sourceUrl: "",
@@ -1230,6 +1332,12 @@ async function loadSamplePayload() {
       sourceLabel: embeddedPayload?.reviewState?.sourceFileName || "Bundled review sample",
       sourceUrl: "",
       syncedAt: reviewState?.updatedAt || "",
+    },
+    evaluatorSync: {
+      mode: "sample",
+      sourceLabel: "Bundled evaluator sample",
+      sourceUrl: "",
+      syncedAt: evaluatorReports?.[0]?.generatedAt || "",
     },
   };
 }
@@ -1262,6 +1370,9 @@ async function fetchSharedReviewState() {
 function hydrateState(payload) {
   const campaignState = payload?.campaignState || {};
   const reviewState = payload?.reviewState || {};
+  const evaluatorReports = Array.isArray(payload?.evaluatorReports)
+    ? payload.evaluatorReports.map((report, index) => normalizeEvaluatorReport(report, index))
+    : [];
   const campaignRows = Array.isArray(campaignState.campaignRows)
     ? campaignState.campaignRows.map((row, index) => normalizeCampaignRow(row, index))
     : [];
@@ -1285,6 +1396,9 @@ function hydrateState(payload) {
   state.correlation = analysis.correlation;
   state.meta = campaignState.meta || {};
   state.reviewStatePayload = reviewState;
+  state.evaluatorReports = evaluatorReports.sort((left, right) =>
+    right.generatedAt.localeCompare(left.generatedAt),
+  );
   state.sync = {
     mode: payload?.sync?.mode || "sample",
     detail: payload?.sync?.detail || "Sample mode is active.",
@@ -1310,6 +1424,23 @@ function hydrateState(payload) {
     sourceUrl: payload?.reviewSync?.sourceUrl || reviewState?.sourcePage || "",
     syncedAt: payload?.reviewSync?.syncedAt || reviewState?.updatedAt || "",
   };
+  state.evaluatorSync = {
+    mode: payload?.evaluatorSync?.mode || inferEvaluatorMode(evaluatorReports),
+    sourceLabel:
+      payload?.evaluatorSync?.sourceLabel ||
+      evaluatorReports[0]?.sourceLabel ||
+      "No evaluator reports synced yet",
+    sourceUrl: payload?.evaluatorSync?.sourceUrl || evaluatorReports[0]?.sourcePage || "",
+    syncedAt: payload?.evaluatorSync?.syncedAt || evaluatorReports[0]?.generatedAt || "",
+  };
+
+  if (
+    !state.selectedEvaluatorDate ||
+    (state.selectedEvaluatorDate !== "all" &&
+      !state.evaluatorReports.some((report) => report.reportDate === state.selectedEvaluatorDate))
+  ) {
+    state.selectedEvaluatorDate = state.evaluatorReports[0]?.reportDate || "";
+  }
 
   if (!state.campaigns.some((campaign) => campaign.id === state.selectedCampaignId)) {
     state.selectedCampaignId = state.campaigns[0]?.id || null;
@@ -1368,6 +1499,34 @@ function handleReviewSnapshotMessage(event) {
   render();
 }
 
+function handleEvaluatorSnapshotMessage(event) {
+  const payload = event?.data;
+  if (!payload || payload.type !== "adcraft-evaluator-sync-snapshot") {
+    return;
+  }
+
+  const evaluatorReports = normalizeIncomingEvaluatorSnapshot(payload.payload);
+  if (!evaluatorReports.length) {
+    return;
+  }
+
+  persistEvaluatorReports(evaluatorReports);
+  hydrateState({
+    campaignState: state.campaignStatePayload,
+    reviewState: state.reviewStatePayload,
+    evaluatorReports,
+    sync: state.sync,
+    reviewSync: state.reviewSync,
+    evaluatorSync: {
+      mode: "browser",
+      sourceLabel: "Gmail evaluator thread",
+      sourceUrl: payload.payload?.sourcePage || "",
+      syncedAt: payload.payload?.fetchedAt || evaluatorReports[0]?.generatedAt || "",
+    },
+  });
+  render();
+}
+
 function applyBrowserSnapshotIfNewer() {
   const stored = readBrowserSnapshot();
   if (!stored) return;
@@ -1417,6 +1576,35 @@ function applyReviewSnapshotIfNewer() {
       sourceLabel: stored.sourcePage || stored.sourceFileName || "Browser review snapshot",
       sourceUrl: stored.sourcePage || "",
       syncedAt: stored.updatedAt || "",
+    },
+  });
+  render();
+}
+
+function applyEvaluatorReportsIfNewer() {
+  const stored = readEvaluatorReports();
+  if (!stored.length) return;
+
+  const storedTime = Date.parse(stored[0]?.generatedAt || "");
+  const currentTime = Date.parse(state.evaluatorSync.syncedAt || "");
+  const shouldUseStored =
+    state.evaluatorSync.mode === "sample" ||
+    (Number.isFinite(storedTime) &&
+      (!Number.isFinite(currentTime) || storedTime >= currentTime));
+
+  if (!shouldUseStored) return;
+
+  hydrateState({
+    campaignState: state.campaignStatePayload,
+    reviewState: state.reviewStatePayload,
+    evaluatorReports: stored,
+    sync: state.sync,
+    reviewSync: state.reviewSync,
+    evaluatorSync: {
+      mode: "browser",
+      sourceLabel: stored[0]?.sourceLabel || "Gmail evaluator thread",
+      sourceUrl: stored[0]?.sourcePage || "",
+      syncedAt: stored[0]?.generatedAt || "",
     },
   });
   render();
@@ -1823,7 +2011,9 @@ function render() {
   }
 
   syncFilterOptions();
+  syncEvaluatorDateOptions();
   renderSyncCard();
+  renderEvaluatorSummary();
   renderSummary();
   renderInsights();
   renderFunnelChart();
@@ -1865,6 +2055,95 @@ function renderSyncCard() {
   } else {
     elements.reviewSyncSource.textContent = state.reviewSync.sourceLabel || "—";
   }
+
+  elements.evaluatorSyncMode.textContent =
+    state.evaluatorSync.mode === "browser"
+      ? `Live evaluator sync · ${formatDateTimeSafe(state.evaluatorSync.syncedAt)}`
+      : "Bundled evaluator sample";
+
+  if (state.evaluatorSync.sourceUrl) {
+    elements.evaluatorSyncSource.innerHTML = `<a href="${escapeHtml(
+      state.evaluatorSync.sourceUrl,
+    )}" target="_blank" rel="noreferrer">${escapeHtml(state.evaluatorSync.sourceLabel)}</a>`;
+  } else {
+    elements.evaluatorSyncSource.textContent = state.evaluatorSync.sourceLabel || "—";
+  }
+}
+
+function renderEvaluatorSummary() {
+  const reports = getActiveEvaluatorReports();
+
+  if (!reports.length) {
+    elements.evaluatorMetricStrip.innerHTML = `
+      <article class="metric-card">
+        <span>No evaluator reports yet</span>
+        <strong>—</strong>
+        <small>Open the Gmail report thread and run Sync Evaluator Email.</small>
+      </article>
+    `;
+    elements.evaluatorDetail.textContent =
+      "The evaluator email summary is separate from the campaign-performance dashboard. Once synced, you can switch between report dates here.";
+    return;
+  }
+
+  const report = summarizeEvaluatorReports(reports);
+  const cards = [
+    {
+      label: "Campaigns Processed",
+      value: formatNumberOrDash(report.campaignsProcessed),
+      hint:
+        reports.length > 1
+          ? "Sum across the selected evaluator dates"
+          : "Daily evaluator run volume",
+    },
+    {
+      label: "Campaigns Closed",
+      value: formatNumberOrDash(report.campaignsClosed),
+      hint:
+        reports.length > 1
+          ? "Sum across the selected evaluator dates"
+          : "Campaigns marked closed in that report",
+    },
+    {
+      label: "Templates Graduated",
+      value: formatNumberOrDash(report.templatesGraduated),
+      hint: reports.length > 1 ? "Summed evaluator graduation count" : "Evaluator graduation count",
+    },
+    {
+      label: "Templates Eliminated",
+      value: formatNumberOrDash(report.templatesEliminated),
+      hint: "Templates selected from the elimination queue",
+    },
+    {
+      label: "Templates Trash",
+      value: formatNumberOrDash(report.templatesTrash),
+      hint: "Templates under the trash threshold",
+    },
+  ];
+
+  elements.evaluatorMetricStrip.innerHTML = cards
+    .map(
+      (card) => `
+        <article class="metric-card">
+          <span>${escapeHtml(card.label)}</span>
+          <strong>${escapeHtml(card.value)}</strong>
+          <small>${escapeHtml(card.hint)}</small>
+        </article>
+      `,
+    )
+    .join("");
+
+  const thresholdNote =
+    report.clickThreshold !== null
+      ? `Graduation threshold in that email: at least ${report.clickThreshold} counted clicks.`
+      : "Graduation threshold comes from the evaluator email definitions, not the campaign dashboard definitions.";
+  const detailPrefix =
+    reports.length > 1
+      ? `${reports.length} evaluator reports selected from ${formatDateSafe(
+          reports[reports.length - 1].reportDate,
+        )} through ${formatDateSafe(reports[0].reportDate)}.`
+      : `${formatDateSafe(report.reportDate)} email summary synced from Gmail.`;
+  elements.evaluatorDetail.textContent = `${detailPrefix} ${thresholdNote}`;
 }
 
 function renderSummary() {
@@ -2388,6 +2667,53 @@ function syncFilterOptions() {
   ].join("");
 }
 
+function syncEvaluatorDateOptions() {
+  if (!elements.reportDateFilter) return;
+
+  const reports = state.evaluatorReports;
+  if (!reports.length) {
+    elements.reportDateFilter.innerHTML = `<option value="">No evaluator dates synced</option>`;
+    elements.reportDateFilter.value = "";
+    return;
+  }
+
+  const options = [
+    `<option value="all" ${state.selectedEvaluatorDate === "all" ? "selected" : ""}>All synced dates</option>`,
+    ...reports.map(
+      (report) =>
+        `<option value="${escapeHtml(report.reportDate)}" ${
+          state.selectedEvaluatorDate === report.reportDate ? "selected" : ""
+        }>${escapeHtml(formatDateSafe(report.reportDate))}</option>`,
+    ),
+  ];
+
+  elements.reportDateFilter.innerHTML = options.join("");
+
+  if (
+    state.selectedEvaluatorDate &&
+    (state.selectedEvaluatorDate === "all" ||
+      reports.some((report) => report.reportDate === state.selectedEvaluatorDate))
+  ) {
+    elements.reportDateFilter.value = state.selectedEvaluatorDate;
+    return;
+  }
+
+  state.selectedEvaluatorDate = reports[0]?.reportDate || "all";
+  elements.reportDateFilter.value = state.selectedEvaluatorDate;
+}
+
+function getActiveEvaluatorReports() {
+  if (!state.evaluatorReports.length) return [];
+
+  if (state.selectedEvaluatorDate === "all") {
+    return state.evaluatorReports;
+  }
+
+  return state.evaluatorReports.filter(
+    (report) => report.reportDate === state.selectedEvaluatorDate,
+  );
+}
+
 function applyFilters(items, filters) {
   return items.filter((campaign) => {
     const haystack = [
@@ -2419,6 +2745,41 @@ function summarizeCampaigns(items) {
     totalTemplateClones: sumNullable(items.map((item) => item.totalTemplateClones)),
     totalSignups: sumNullable(items.map((item) => item.totalSignups)),
     estimatedAtRiskGraduates: sumNullable(items.map((item) => item.estimatedAtRiskGraduates)),
+  };
+}
+
+function summarizeEvaluatorReports(reports) {
+  if (!reports.length) {
+    return {
+      reportDate: "",
+      generatedAt: "",
+      campaignsProcessed: null,
+      campaignsClosed: null,
+      templatesGraduated: null,
+      templatesEliminated: null,
+      templatesTrash: null,
+      clickThreshold: null,
+    };
+  }
+
+  if (reports.length === 1) {
+    return reports[0];
+  }
+
+  return {
+    id: "all",
+    reportDate: reports[0].reportDate,
+    generatedAt: reports[0].generatedAt,
+    campaignsProcessed: sumNullable(reports.map((report) => report.campaignsProcessed)),
+    campaignsClosed: sumNullable(reports.map((report) => report.campaignsClosed)),
+    templatesGraduated: sumNullable(reports.map((report) => report.templatesGraduated)),
+    templatesEliminated: sumNullable(reports.map((report) => report.templatesEliminated)),
+    templatesTrash: sumNullable(reports.map((report) => report.templatesTrash)),
+    clickThreshold: reports.every(
+      (report) => report.clickThreshold !== null && report.clickThreshold === reports[0].clickThreshold,
+    )
+      ? reports[0].clickThreshold
+      : null,
   };
 }
 
@@ -2725,6 +3086,118 @@ function readReviewSnapshot() {
   }
 }
 
+function persistEvaluatorReports(reports) {
+  try {
+    window.localStorage.setItem(LOCAL_EVALUATOR_REPORTS_KEY, JSON.stringify(reports));
+  } catch (error) {
+    // Ignore storage failures and keep the live snapshot in memory.
+  }
+}
+
+function readEvaluatorReports() {
+  try {
+    const raw = window.localStorage.getItem(LOCAL_EVALUATOR_REPORTS_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed)
+      ? parsed.map((report, index) => normalizeEvaluatorReport(report, index))
+      : [];
+  } catch (error) {
+    return [];
+  }
+}
+
+function normalizeEvaluatorReport(report, index) {
+  const generatedAtRaw = firstNonEmpty([
+    report.generatedAt,
+    report.generated_at,
+    report.generated_at_text,
+    report.createdAt,
+    report["Date"],
+  ]);
+  const reportDate = normalizeDate(
+    firstNonEmpty([report.reportDate, report.report_date, generatedAtRaw]),
+  );
+  const generatedAt = normalizeDateTimeString(generatedAtRaw, reportDate);
+
+  return {
+    id:
+      firstNonEmpty([report.id, report.report_id, reportDate, generatedAt]) ||
+      `evaluator-report-${index + 1}`,
+    reportDate,
+    generatedAt,
+    campaignsProcessed: parseNumber(
+      firstNonEmpty([
+        report.campaignsProcessed,
+        report.campaigns_processed,
+        report["Campaigns Processed"],
+      ]),
+    ),
+    campaignsClosed: parseNumber(
+      firstNonEmpty([
+        report.campaignsClosed,
+        report.campaigns_closed,
+        report["Campaigns Closed"],
+      ]),
+    ),
+    templatesGraduated: parseNumber(
+      firstNonEmpty([
+        report.templatesGraduated,
+        report.templates_graduated,
+        report["Templates Graduated"],
+      ]),
+    ),
+    templatesEliminated: parseNumber(
+      firstNonEmpty([
+        report.templatesEliminated,
+        report.templates_eliminated,
+        report["Templates Eliminated"],
+      ]),
+    ),
+    templatesTrash: parseNumber(
+      firstNonEmpty([
+        report.templatesTrash,
+        report.templates_trash,
+        report["Templates Trash"],
+      ]),
+    ),
+    clickThreshold: parseNumber(
+      firstNonEmpty([report.clickThreshold, report.click_threshold]),
+    ),
+    sourceLabel:
+      firstNonEmpty([report.sourceLabel, report.source_label, report.subject]) ||
+      "Evaluator email report",
+    sourcePage: firstNonEmpty([report.sourcePage, report.source_page]) || "",
+    subject: firstNonEmpty([report.subject]) || "",
+  };
+}
+
+function normalizeIncomingEvaluatorSnapshot(snapshot) {
+  if (!snapshot || typeof snapshot !== "object") {
+    return [];
+  }
+
+  const reports = Array.isArray(snapshot.reports)
+    ? snapshot.reports
+    : Array.isArray(snapshot.items)
+      ? snapshot.items
+      : [];
+
+  const normalized = reports
+    .map((report, index) =>
+      normalizeEvaluatorReport(
+        {
+          ...report,
+          sourcePage: report.sourcePage || snapshot.sourcePage || "",
+          sourceLabel: report.sourceLabel || "Gmail evaluator thread",
+        },
+        index,
+      ),
+    )
+    .filter((report) => report.reportDate || report.generatedAt);
+
+  return dedupeEvaluatorReports(normalized);
+}
+
 function normalizeChecks(checks) {
   return Object.fromEntries(
     Object.keys(CHECK_META).map((key) => {
@@ -2766,6 +3239,30 @@ function normalizeDate(value) {
   const month = `${parsed.getUTCMonth() + 1}`.padStart(2, "0");
   const day = `${parsed.getUTCDate()}`.padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+function normalizeDateTimeString(value, fallbackDate = "") {
+  if (!value && !fallbackDate) return "";
+  const raw = String(value || "").trim();
+
+  if (/^\d{4}-\d{2}-\d{2}\s+\d{2}:\d{2}:\d{2}$/.test(raw)) {
+    return raw.replace(/\s+/, "T");
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/.test(raw)) {
+    return raw;
+  }
+
+  const parsed = raw ? new Date(raw) : new Date(`${fallbackDate}T00:00:00`);
+  if (!Number.isNaN(parsed.getTime())) {
+    return parsed.toISOString();
+  }
+
+  if (fallbackDate) {
+    return `${fallbackDate}T00:00:00`;
+  }
+
+  return raw;
 }
 
 function buildCampaignKey(campaign) {
@@ -2980,6 +3477,52 @@ function inferReviewMode(reviewState) {
   return reviewState?.sourcePage ? "browser" : "sample";
 }
 
+function inferEvaluatorMode(reports) {
+  return Array.isArray(reports) && reports.some((report) => report.sourcePage)
+    ? "browser"
+    : "sample";
+}
+
+function dedupeEvaluatorReports(reports) {
+  const byKey = new Map();
+
+  reports.forEach((report, index) => {
+    const normalized = normalizeEvaluatorReport(report, index);
+    const key = normalized.reportDate || normalized.generatedAt || normalized.id;
+    const existing = byKey.get(key);
+    if (!existing) {
+      byKey.set(key, normalized);
+      return;
+    }
+
+    const existingScore = evaluatorCompletenessScore(existing);
+    const nextScore = evaluatorCompletenessScore(normalized);
+    if (nextScore >= existingScore) {
+      byKey.set(key, {
+        ...existing,
+        ...normalized,
+      });
+    }
+  });
+
+  return [...byKey.values()].sort((left, right) =>
+    (right.generatedAt || right.reportDate || "").localeCompare(
+      left.generatedAt || left.reportDate || "",
+    ),
+  );
+}
+
+function evaluatorCompletenessScore(report) {
+  return [
+    report.campaignsProcessed,
+    report.campaignsClosed,
+    report.templatesGraduated,
+    report.templatesEliminated,
+    report.templatesTrash,
+    report.clickThreshold,
+  ].filter((value) => value !== null && value !== undefined).length;
+}
+
 function describeCorrelation(value) {
   if (value === null) return "not available yet";
   if (value >= 0.5) return "strongly positive";
@@ -3013,6 +3556,13 @@ function createReviewBookmarkletHref(appOrigin) {
   const script = `(async()=>{const APP=${JSON.stringify(
     appOrigin,
   )};const ORIGIN=new URL(APP).origin;const say=(message)=>alert("Review Sync\\n\\n"+message);const dashboardWindow=window.open(APP,"_blank");try{const apiUrl=new URL("/api/data",location.href).toString();const response=await fetch(apiUrl,{credentials:"include",cache:"no-store"});if(!response.ok){throw new Error("Review API failed ("+response.status+")");}const reviewPayload=await response.json();if(!Array.isArray(reviewPayload.items)){throw new Error("This page did not return a review dataset.");}const snapshot={fetchedAt:new Date().toISOString(),sourcePage:location.href,apiUrl,reviewPayload};if(dashboardWindow){const deliver=(attempt=0)=>{try{dashboardWindow.postMessage({type:"adcraft-review-sync-snapshot",payload:snapshot},ORIGIN);}catch(error){}if(attempt<8){setTimeout(()=>deliver(attempt+1),500);}};deliver();}say("Review data sent to the dashboard window. Refresh the board if you want to compare another review snapshot.");}catch(error){say(error.message||String(error));}})();`;
+  return `javascript:${script}`;
+}
+
+function createEvaluatorBookmarkletHref(appOrigin) {
+  const script = `(async()=>{const APP=${JSON.stringify(
+    appOrigin,
+  )};const ORIGIN=new URL(APP).origin;const wait=(ms)=>new Promise((resolve)=>setTimeout(resolve,ms));const say=(message)=>alert("Evaluator Email Sync\\n\\n"+message);const dashboardWindow=window.open(APP,"_blank");const clickMatches=(phrases)=>{let clicked=0;const nodes=[...document.querySelectorAll('[role="button"],button,div[role="button"],span[role="button"],summary')];nodes.forEach((node)=>{const text=[node.innerText||"",node.getAttribute("aria-label")||"",node.getAttribute("title")||""].join(" ").trim().toLowerCase();if(!text)return;if(phrases.some((phrase)=>text.includes(phrase))){try{node.click();clicked+=1;}catch(error){}}});return clicked;};const readMetric=(block,label)=>{const patterns=[new RegExp(label+"\\\\s*:?\\\\s*([0-9,]+)","i"),new RegExp("([0-9,]+)\\\\s*"+label,"i")];for(const pattern of patterns){const match=block.match(pattern);if(match){return Number(String(match[1]).replace(/,/g,""));}}return null;};const extractReports=(text)=>{const normalized=String(text||"").replace(/\\r/g,"");const subjectPattern=/\\[AdCraft\\]\\s*Form Template Campaign Evaluator Daily Report\\s*-\\s*(\\d{4}-\\d{2}-\\d{2})/gi;const matches=[...normalized.matchAll(subjectPattern)];const reports=[];const globalThresholdMatch=normalized.match(/at least\\s*(\\d+)\\s*counted clicks/i);const buildReport=(block,fallbackDate)=>{const dateMatch=block.match(/Date:\\s*(\\d{4}-\\d{2}-\\d{2})(?:\\s+([0-9:]{8}))?/i);const reportDate=(dateMatch&&dateMatch[1])||fallbackDate||"";const generatedAt=dateMatch?(dateMatch[2]?dateMatch[1]+"T"+dateMatch[2]:dateMatch[1]+"T00:00:00"):reportDate?reportDate+"T00:00:00":"";const localThresholdMatch=block.match(/at least\\s*(\\d+)\\s*counted clicks/i);return{reportDate,generatedAt,campaignsProcessed:readMetric(block,"Campaigns Processed"),campaignsClosed:readMetric(block,"Campaigns Closed"),templatesGraduated:readMetric(block,"Templates Graduated"),templatesEliminated:readMetric(block,"Templates Eliminated"),templatesTrash:readMetric(block,"Templates Trash"),clickThreshold:localThresholdMatch?Number(localThresholdMatch[1]):globalThresholdMatch?Number(globalThresholdMatch[1]):null,subject:reportDate?"[AdCraft] Form Template Campaign Evaluator Daily Report - "+reportDate:"[AdCraft] Form Template Campaign Evaluator Daily Report"};};if(matches.length){matches.forEach((match,index)=>{const start=match.index||0;const end=index+1<matches.length?(matches[index+1].index||normalized.length):normalized.length;const block=normalized.slice(start,end);reports.push(buildReport(block,match[1]||""));});}else{const fallbackDate=(normalized.match(/Date:\\s*(\\d{4}-\\d{2}-\\d{2})/i)||document.title.match(/(\\d{4}-\\d{2}-\\d{2})/)||[])[1]||"";if(/Campaigns Processed|Templates Graduated|Templates Eliminated|Templates Trash/i.test(normalized)&&fallbackDate){reports.push(buildReport(normalized,fallbackDate));}}return reports.filter((report)=>report.reportDate&&(report.campaignsProcessed!==null||report.campaignsClosed!==null||report.templatesGraduated!==null||report.templatesEliminated!==null||report.templatesTrash!==null));};try{clickMatches(["show trimmed content","view entire message","expand all","older messages"]);await wait(500);clickMatches(["show trimmed content","view entire message"]);await wait(800);const reports=extractReports(document.body.innerText||"");if(!reports.length){throw new Error("No evaluator report blocks were detected. Open the Gmail thread, expand the daily report messages you want, and run this again.");}const unique=new Map();reports.forEach((report)=>{const key=report.reportDate||report.generatedAt;if(!unique.has(key)){unique.set(key,report);}});const snapshot={fetchedAt:new Date().toISOString(),sourcePage:location.href,reports:[...unique.values()].sort((a,b)=>(b.generatedAt||b.reportDate||"").localeCompare(a.generatedAt||a.reportDate||""))};if(dashboardWindow){const deliver=(attempt=0)=>{try{dashboardWindow.postMessage({type:"adcraft-evaluator-sync-snapshot",payload:snapshot},ORIGIN);}catch(error){}if(attempt<8){setTimeout(()=>deliver(attempt+1),500);}};deliver();}say(snapshot.reports.length>1?"Synced "+snapshot.reports.length+" evaluator email dates to the dashboard window.":"Synced the evaluator email summary to the dashboard window.");}catch(error){say(error.message||String(error));}})();`;
   return `javascript:${script}`;
 }
 
