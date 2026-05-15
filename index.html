@@ -1,0 +1,3021 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adcraft Campaign Health Dashboard</title>
+    <style>
+:root {
+  --bg: #f4efe7;
+  --bg-strong: #e8dcc8;
+  --panel: rgba(255, 251, 245, 0.84);
+  --panel-strong: rgba(255, 255, 255, 0.93);
+  --ink: #1e293b;
+  --ink-soft: #5b6474;
+  --line: rgba(30, 41, 59, 0.12);
+  --line-strong: rgba(30, 41, 59, 0.2);
+  --accent: #0f766e;
+  --accent-soft: rgba(15, 118, 110, 0.12);
+  --rose: #b42318;
+  --rose-soft: rgba(180, 35, 24, 0.12);
+  --amber: #b45309;
+  --amber-soft: rgba(180, 83, 9, 0.12);
+  --slate: #3f4c63;
+  --sky: #0f4c81;
+  --sky-soft: rgba(15, 76, 129, 0.12);
+  --shadow: 0 24px 50px rgba(30, 41, 59, 0.08);
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --radius-sm: 12px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at top left, rgba(180, 83, 9, 0.1), transparent 24rem),
+    radial-gradient(circle at top right, rgba(15, 118, 110, 0.12), transparent 22rem),
+    linear-gradient(180deg, #f7f3ea 0%, #eee5d6 100%);
+  color: var(--ink);
+  font-family: "Avenir Next", "Segoe UI", sans-serif;
+}
+
+body {
+  padding: 30px 22px 44px;
+}
+
+button,
+input,
+select,
+a {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+.page-shell {
+  margin: 0 auto;
+  max-width: 1620px;
+}
+
+.hero,
+.panel,
+.info-banner {
+  animation: fade-up 260ms ease;
+}
+
+.hero {
+  align-items: stretch;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1.35fr) minmax(360px, 0.95fr);
+  margin-bottom: 18px;
+}
+
+.hero-copy h1,
+.sync-card h2,
+.panel h2,
+.detail-view h2,
+.empty-state h2,
+.template-panel h3,
+.compact-header h3 {
+  font-family: "Iowan Old Style", "Baskerville", Georgia, serif;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.hero-copy h1 {
+  font-size: clamp(2.6rem, 4vw, 4.6rem);
+  line-height: 0.92;
+}
+
+.hero-copy p:last-child,
+.muted,
+.detail-summary {
+  color: var(--ink-soft);
+  line-height: 1.65;
+}
+
+.hero-copy p:last-child {
+  font-size: 1rem;
+  margin: 1rem 0 0;
+  max-width: 62ch;
+}
+
+.eyebrow,
+.section-label {
+  color: var(--amber);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin: 0 0 0.55rem;
+  text-transform: uppercase;
+}
+
+.sync-card,
+.metric-card,
+.insight-card,
+.panel {
+  backdrop-filter: blur(16px);
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+}
+
+.sync-card {
+  display: grid;
+  gap: 1rem;
+  padding: 1.15rem;
+}
+
+.sync-card h2 {
+  font-size: 1.45rem;
+}
+
+.sync-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.primary-button,
+.secondary-button,
+.ghost-button {
+  align-items: center;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 1rem;
+  text-decoration: none;
+  transition: transform 160ms ease, background 160ms ease, border 160ms ease;
+}
+
+.primary-button {
+  background: linear-gradient(135deg, #0f766e 0%, #155e75 100%);
+  border: 1px solid transparent;
+  box-shadow: var(--shadow);
+  color: white;
+}
+
+.secondary-button,
+.ghost-button {
+  background: var(--panel-strong);
+  border: 1px solid var(--line-strong);
+  box-shadow: var(--shadow);
+  color: var(--ink);
+}
+
+.ghost-button {
+  background: transparent;
+  box-shadow: none;
+}
+
+.primary-button:hover,
+.secondary-button:hover,
+.ghost-button:hover,
+.campaign-item:hover {
+  transform: translateY(-1px);
+}
+
+.sync-meta {
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+}
+
+.sync-meta div {
+  background: rgba(255, 255, 255, 0.56);
+  border: 1px solid rgba(30, 41, 59, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 0.8rem;
+}
+
+.sync-meta dt {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+  margin-bottom: 0.35rem;
+}
+
+.sync-meta dd {
+  font-size: 0.94rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.info-banner {
+  background: rgba(255, 248, 238, 0.84);
+  border: 1px solid rgba(180, 83, 9, 0.18);
+  border-radius: var(--radius-md);
+  color: var(--ink-soft);
+  margin-bottom: 18px;
+  padding: 0.95rem 1rem;
+}
+
+.inline-code {
+  background: rgba(30, 41, 59, 0.08);
+  border-radius: 8px;
+  color: var(--ink);
+  display: inline-block;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+  padding: 0.1rem 0.45rem;
+}
+
+.metric-strip,
+.insight-strip,
+.visual-grid,
+.workspace {
+  display: grid;
+  gap: 18px;
+}
+
+.metric-strip {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 18px;
+}
+
+.metric-card,
+.insight-card {
+  display: grid;
+  gap: 0.28rem;
+  padding: 1rem 1.1rem;
+}
+
+.metric-card strong {
+  font-size: clamp(1.7rem, 2vw, 2.3rem);
+  line-height: 1;
+}
+
+.metric-card span,
+.metric-card small {
+  color: var(--ink-soft);
+}
+
+.metric-card small {
+  font-size: 0.86rem;
+}
+
+.insight-strip {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-bottom: 18px;
+}
+
+.insight-card strong {
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.visual-grid {
+  grid-template-columns: minmax(0, 1.55fr) minmax(320px, 0.88fr) minmax(320px, 0.88fr);
+  margin-bottom: 18px;
+}
+
+.workspace {
+  align-items: start;
+  grid-template-columns: minmax(360px, 0.95fr) minmax(0, 1.4fr);
+}
+
+.panel {
+  overflow: hidden;
+  padding: 18px;
+}
+
+.wide-panel {
+  min-height: 370px;
+}
+
+.panel-header,
+.detail-header {
+  align-items: start;
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+.panel-caption,
+.count-pill,
+.metric-pill,
+.health-chip,
+.flag {
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  padding: 0.42rem 0.68rem;
+}
+
+.panel-caption,
+.count-pill,
+.metric-pill {
+  background: rgba(30, 41, 59, 0.08);
+  color: var(--ink-soft);
+}
+
+.count-pill {
+  white-space: nowrap;
+}
+
+.filters {
+  display: grid;
+  gap: 0.8rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 1rem 0 1.1rem;
+}
+
+.filters label {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.filters span {
+  color: var(--ink-soft);
+  font-size: 0.84rem;
+  font-weight: 600;
+}
+
+.filters input,
+.filters select {
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid rgba(30, 41, 59, 0.14);
+  border-radius: 14px;
+  color: var(--ink);
+  min-height: 44px;
+  padding: 0 0.85rem;
+}
+
+.campaign-list,
+.pattern-list,
+.template-list,
+.critics-list,
+.suggestion-list,
+.detail-review-metrics,
+.detail-metrics {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.campaign-item {
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(30, 41, 59, 0.08);
+  border-radius: 18px;
+  cursor: pointer;
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  text-align: left;
+  transition: border 160ms ease, transform 160ms ease, background 160ms ease;
+}
+
+.campaign-item.active {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(15, 118, 110, 0.35);
+}
+
+.campaign-item h3,
+.issue-card h3,
+.template-item h4 {
+  margin: 0;
+}
+
+.campaign-topline,
+.campaign-stats,
+.meta-row,
+.template-topline {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.health-chip {
+  color: white;
+}
+
+.health-chip.healthy {
+  background: linear-gradient(135deg, #0f766e, #0f9b8e);
+}
+
+.health-chip.watch {
+  background: linear-gradient(135deg, #b45309, #d97706);
+}
+
+.health-chip.critical {
+  background: linear-gradient(135deg, #b42318, #dc2626);
+}
+
+.flag {
+  border: 1px solid transparent;
+  font-weight: 600;
+}
+
+.flag.info {
+  background: rgba(15, 76, 129, 0.08);
+  color: var(--sky);
+}
+
+.flag.watch {
+  background: var(--amber-soft);
+  color: var(--amber);
+}
+
+.flag.critical {
+  background: var(--rose-soft);
+  color: var(--rose);
+}
+
+.empty-state,
+.empty-collection {
+  align-items: start;
+  color: var(--ink-soft);
+  display: grid;
+  gap: 0.55rem;
+  min-height: 180px;
+  place-content: center start;
+}
+
+.detail-column,
+.detail-view {
+  display: grid;
+  gap: 18px;
+}
+
+.detail-view {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.detail-summary {
+  margin: 0;
+}
+
+.detail-metrics {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.detail-metric-card,
+.review-metric-card,
+.pattern-card,
+.critic-card,
+.template-item,
+.mini-insight {
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(30, 41, 59, 0.08);
+  border-radius: 16px;
+}
+
+.detail-metric-card,
+.review-metric-card {
+  display: grid;
+  gap: 0.2rem;
+  padding: 0.9rem;
+}
+
+.detail-metric-card span,
+.review-metric-card span {
+  color: var(--ink-soft);
+  font-size: 0.83rem;
+}
+
+.detail-metric-card strong,
+.review-metric-card strong {
+  font-size: 1.24rem;
+}
+
+.detail-split {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+}
+
+.compact-header {
+  margin-bottom: 0.8rem;
+}
+
+.compact-header h3 {
+  font-size: 1.28rem;
+}
+
+.review-metric-card small,
+.template-summary small,
+.critic-card small,
+.pattern-card small {
+  color: var(--ink-soft);
+}
+
+.suggestion-list {
+  align-content: start;
+}
+
+.suggestion-item,
+.pattern-card,
+.critic-card {
+  padding: 0.95rem 1rem;
+}
+
+.suggestion-item {
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(30, 41, 59, 0.08);
+  border-radius: 16px;
+}
+
+.template-summary {
+  background: rgba(15, 118, 110, 0.07);
+  border: 1px solid rgba(15, 118, 110, 0.12);
+  border-radius: 16px;
+  margin-bottom: 0.9rem;
+  padding: 0.95rem;
+}
+
+.template-summary-grid {
+  display: grid;
+  gap: 0.85rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin-bottom: 0.75rem;
+}
+
+.template-summary-grid article {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.template-summary-grid span {
+  color: var(--ink-soft);
+  font-size: 0.83rem;
+}
+
+.template-item {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.95rem;
+}
+
+.template-badge {
+  align-items: center;
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 0.78rem;
+  font-weight: 700;
+  padding: 0.38rem 0.62rem;
+}
+
+.template-badge.pass {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.template-badge.pending {
+  background: rgba(15, 76, 129, 0.08);
+  color: var(--sky);
+}
+
+.template-badge.fix {
+  background: var(--rose-soft);
+  color: var(--rose);
+}
+
+.bar-chart {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.bar-row {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.bar-row header {
+  align-items: baseline;
+  display: flex;
+  gap: 0.55rem;
+  justify-content: space-between;
+}
+
+.bar-row header strong {
+  font-size: 0.96rem;
+}
+
+.bar-track {
+  background: rgba(30, 41, 59, 0.08);
+  border-radius: 999px;
+  display: flex;
+  height: 16px;
+  overflow: hidden;
+}
+
+.bar-segment.generated {
+  background: rgba(15, 76, 129, 0.22);
+}
+
+.bar-segment.graduated {
+  background: linear-gradient(90deg, #0f766e, #0f9b8e);
+}
+
+.bar-segment.trashed {
+  background: linear-gradient(90deg, #b42318, #dc2626);
+}
+
+.bar-segment.clean {
+  background: rgba(180, 83, 9, 0.82);
+}
+
+.bar-legend {
+  color: var(--ink-soft);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+}
+
+.correlation-shell {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.correlation-stage {
+  background:
+    linear-gradient(90deg, rgba(180, 35, 24, 0.05) 0 50%, rgba(15, 118, 110, 0.05) 50% 100%),
+    linear-gradient(180deg, rgba(15, 118, 110, 0.05) 0 50%, rgba(180, 35, 24, 0.05) 50% 100%);
+  border: 1px solid rgba(30, 41, 59, 0.08);
+  border-radius: 18px;
+  min-height: 280px;
+  position: relative;
+}
+
+.correlation-stage::before,
+.correlation-stage::after {
+  content: "";
+  position: absolute;
+}
+
+.correlation-stage::before {
+  border-top: 1px dashed rgba(30, 41, 59, 0.16);
+  inset: 50% 0 auto;
+}
+
+.correlation-stage::after {
+  border-left: 1px dashed rgba(30, 41, 59, 0.16);
+  inset: 0 auto 0 50%;
+}
+
+.correlation-point {
+  align-items: center;
+  background: white;
+  border: 2px solid rgba(30, 41, 59, 0.14);
+  border-radius: 999px;
+  box-shadow: 0 10px 18px rgba(30, 41, 59, 0.12);
+  display: inline-flex;
+  font-size: 0.74rem;
+  font-weight: 700;
+  gap: 0.32rem;
+  padding: 0.35rem 0.55rem;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  white-space: nowrap;
+}
+
+.correlation-point.healthy {
+  border-color: rgba(15, 118, 110, 0.35);
+}
+
+.correlation-point.watch {
+  border-color: rgba(180, 83, 9, 0.35);
+}
+
+.correlation-point.critical {
+  border-color: rgba(180, 35, 24, 0.4);
+}
+
+.correlation-axes {
+  display: flex;
+  justify-content: space-between;
+  color: var(--ink-soft);
+  font-size: 0.82rem;
+}
+
+.critic-card strong,
+.pattern-card strong {
+  display: block;
+  margin-bottom: 0.3rem;
+}
+
+.critic-meter {
+  background: rgba(30, 41, 59, 0.08);
+  border-radius: 999px;
+  height: 10px;
+  margin: 0.7rem 0 0.6rem;
+  overflow: hidden;
+}
+
+.critic-fill {
+  background: linear-gradient(90deg, #b45309, #0f766e);
+  height: 100%;
+}
+
+.hidden {
+  display: none;
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 1280px) {
+  .metric-strip,
+  .visual-grid,
+  .detail-metrics,
+  .detail-split,
+  .template-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .workspace,
+  .hero {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 900px) {
+  body {
+    padding: 20px 16px 32px;
+  }
+
+  .metric-strip,
+  .insight-strip,
+  .visual-grid,
+  .filters,
+  .detail-metrics,
+  .detail-split,
+  .template-summary-grid,
+  .sync-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .campaign-topline,
+  .campaign-stats,
+  .meta-row,
+  .template-topline,
+  .sync-actions {
+    align-items: flex-start;
+  }
+
+  .correlation-point {
+    font-size: 0.68rem;
+    max-width: 120px;
+    white-space: normal;
+  }
+}
+
+</style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Adcraft Ops</p>
+          <h1>Campaign Health + Review Correlation</h1>
+          <p>
+            Sync live performance from the internal Adcraft dashboard, compare
+            graduation with review quality, and spot which campaigns need
+            stronger graduation critics before they quietly fail.
+          </p>
+        </div>
+
+        <aside class="sync-card">
+          <div class="sync-copy">
+            <p class="section-label">Live Sync</p>
+            <h2 id="sync-mode">Loading dashboard state</h2>
+            <p id="sync-detail" class="muted">
+              Checking whether a shared campaign snapshot is available.
+            </p>
+          </div>
+
+          <div class="sync-actions">
+            <a id="bookmarklet-link" class="primary-button" href="#">Sync Campaign Data</a>
+            <a id="review-bookmarklet-link" class="secondary-button" href="#"
+              >Sync Review Data</a
+            >
+            <button id="refresh-data" class="secondary-button" type="button">
+              Refresh Board
+            </button>
+            <button id="reset-sample" class="ghost-button" type="button">
+              Use Sample Data
+            </button>
+          </div>
+
+          <dl class="sync-meta">
+            <div>
+              <dt>Last sync</dt>
+              <dd id="sync-timestamp">—</dd>
+            </div>
+            <div>
+              <dt>Campaigns in scope</dt>
+              <dd id="sync-scope">—</dd>
+            </div>
+            <div>
+              <dt>Source</dt>
+              <dd id="sync-source">—</dd>
+            </div>
+            <div>
+              <dt>Review sync</dt>
+              <dd id="review-sync-mode">—</dd>
+            </div>
+            <div>
+              <dt>Review source</dt>
+              <dd id="review-sync-source">—</dd>
+            </div>
+          </dl>
+        </aside>
+      </header>
+
+      <section class="info-banner">
+        <strong>How to use it:</strong>
+        Open the internal
+        <span class="inline-code">Campaign Details</span>
+        page, filter it until you see the 7 campaigns you care about, then run
+        <span class="inline-code">Sync Campaign Data</span>. After that, open
+        your review dashboard and run
+        <span class="inline-code">Sync Review Data</span> to refresh the
+        correlation model and graduation critics with the latest review state.
+      </section>
+
+      <section id="metric-strip" class="metric-strip"></section>
+
+      <section id="insight-strip" class="insight-strip"></section>
+
+      <section class="visual-grid">
+        <article class="panel wide-panel">
+          <div class="panel-header">
+            <div>
+              <p class="section-label">Campaign Funnel</p>
+              <h2>Graduation, trashing, and estimated clean graduates</h2>
+            </div>
+            <span id="funnel-caption" class="panel-caption"></span>
+          </div>
+          <div id="funnel-chart" class="chart-shell"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="section-label">Correlation</p>
+              <h2>Graduation vs review cleanliness</h2>
+            </div>
+          </div>
+          <div id="correlation-chart" class="correlation-shell"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="section-label">Graduation Critics</p>
+              <h2>Review failures showing up most</h2>
+            </div>
+          </div>
+          <div id="critics-list" class="critics-list"></div>
+        </article>
+      </section>
+
+      <main class="workspace">
+        <aside class="panel queue-panel">
+          <div class="panel-header">
+            <div>
+              <p class="section-label">Campaign Queue</p>
+              <h2>Which of the 7 campaigns need attention first</h2>
+            </div>
+            <span id="campaign-count" class="count-pill">0 campaigns</span>
+          </div>
+
+          <div class="filters">
+            <label>
+              <span>Search</span>
+              <input
+                id="search-filter"
+                type="search"
+                placeholder="Campaign, date, or category"
+              />
+            </label>
+
+            <label>
+              <span>Category</span>
+              <select id="category-filter">
+                <option value="all">All categories</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Risk</span>
+              <select id="risk-filter">
+                <option value="all">All risk states</option>
+                <option value="critical">Critical</option>
+                <option value="watch">Watch</option>
+                <option value="healthy">Healthy</option>
+              </select>
+            </label>
+          </div>
+
+          <div id="campaign-list" class="campaign-list"></div>
+        </aside>
+
+        <section class="detail-column">
+          <article class="panel">
+            <div class="panel-header">
+              <div>
+                <p class="section-label">Review Patterns</p>
+                <h2>How review is affecting graduation</h2>
+              </div>
+            </div>
+            <div id="pattern-list" class="pattern-list"></div>
+          </article>
+
+          <article class="panel detail-panel">
+            <div id="detail-empty" class="empty-state">
+              <p class="section-label">Campaign Detail</p>
+              <h2>Select a campaign</h2>
+              <p>
+                Pick a campaign to inspect its live metrics, review coverage,
+                estimated risky graduates, and the review checks that most often
+                need tightening.
+              </p>
+            </div>
+
+            <div id="detail-view" class="detail-view hidden">
+              <div class="detail-header">
+                <div>
+                  <div id="detail-health" class="health-chip"></div>
+                  <h2 id="detail-title"></h2>
+                  <div id="detail-meta" class="meta-row"></div>
+                </div>
+              </div>
+
+              <p id="detail-summary" class="detail-summary"></p>
+
+              <div id="detail-flags" class="flag-list"></div>
+
+              <div id="detail-metrics" class="detail-metrics"></div>
+
+              <section class="detail-split">
+                <article>
+                  <div class="compact-header">
+                    <p class="section-label">Review Estimate</p>
+                    <h3>Graduated templates under review pressure</h3>
+                  </div>
+                  <div id="detail-review-metrics" class="detail-review-metrics"></div>
+                </article>
+
+                <article>
+                  <div class="compact-header">
+                    <p class="section-label">Critic Suggestions</p>
+                    <h3>What to tighten next</h3>
+                  </div>
+                  <div id="detail-suggestions" class="suggestion-list"></div>
+                </article>
+              </section>
+
+              <section class="template-panel">
+                <div class="compact-header">
+                  <p class="section-label">Template Samples</p>
+                  <h3>Matched live templates and review outcomes</h3>
+                </div>
+                <div id="template-summary" class="template-summary"></div>
+                <div id="template-list" class="template-list"></div>
+              </section>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+
+    <script>
+window.__ADCRAFT_STATIC_MODE__ = true;
+window.__ADCRAFT_EMBEDDED_PAYLOAD__ = {"campaignState":{"version":1,"meta":{"syncedAt":"2026-05-15T09:15:00.000Z","startDate":"2025-12-12","endDate":"2025-12-15","phaseType":"2","sourcePage":"https://support.jotform.com/admn/dashboards/data/adcraft-dashboard/ugc/campaign-performance-details","campaignCount":7,"templateCount":14},"campaignRows":[{"campaignId":"ugc-flow-2025-12-12","campaignName":"#Ugc Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ugc_flow","generatedTemplates":100,"graduatedTemplates":27,"trashedTemplates":73,"totalTemplateClones":14,"totalSignups":1,"totalP30":0,"organicTraffic":28,"gscClicks":37},{"campaignId":"ai-pool-2025-12-12","campaignName":"#Ai Pool Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ai_pool","generatedTemplates":100,"graduatedTemplates":20,"trashedTemplates":80,"totalTemplateClones":6,"totalSignups":0,"totalP30":0,"organicTraffic":21,"gscClicks":16},{"campaignId":"ugc-flow-2025-12-13","campaignName":"#Ugc Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ugc_flow","generatedTemplates":100,"graduatedTemplates":33,"trashedTemplates":67,"totalTemplateClones":11,"totalSignups":3,"totalP30":0,"organicTraffic":41,"gscClicks":58},{"campaignId":"ai-pool-2025-12-13","campaignName":"#Ai Pool Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ai_pool","generatedTemplates":100,"graduatedTemplates":18,"trashedTemplates":82,"totalTemplateClones":4,"totalSignups":0,"totalP30":0,"organicTraffic":12,"gscClicks":11},{"campaignId":"ugc-flow-2025-12-14","campaignName":"#Ugc Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ugc_flow","generatedTemplates":100,"graduatedTemplates":38,"trashedTemplates":62,"totalTemplateClones":13,"totalSignups":1,"totalP30":0,"organicTraffic":62,"gscClicks":72},{"campaignId":"ai-pool-2025-12-14","campaignName":"#Ai Pool Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ai_pool","generatedTemplates":100,"graduatedTemplates":14,"trashedTemplates":86,"totalTemplateClones":3,"totalSignups":0,"totalP30":0,"organicTraffic":7,"gscClicks":9},{"campaignId":"ugc-flow-2025-12-15","campaignName":"#Ugc Flow- [2025-12-15]","campaignCreationDate":"2025-12-15","category":"ugc_flow","generatedTemplates":100,"graduatedTemplates":41,"trashedTemplates":59,"totalTemplateClones":17,"totalSignups":6,"totalP30":0,"organicTraffic":55,"gscClicks":64}],"templateRows":[{"campaignId":"ugc-flow-2025-12-12","campaignName":"#Ugc Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ugc_flow","templateId":"251212001","templateUrl":"https://www.jotform.com/form-templates/warehouse-safety-inspection-form","title":"Warehouse Safety Inspection Form","isGraduated":true,"gscClicks30d":12,"organicSessions":10,"totalCloneCount30d":2,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-12","campaignName":"#Ugc Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ugc_flow","templateId":"251212002","templateUrl":"https://www.jotform.com/form-templates/landscaping-bid-request-form","title":"Landscaping Bid Request Form","isGraduated":true,"gscClicks30d":9,"organicSessions":6,"totalCloneCount30d":1,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-12","campaignName":"#Ai Pool Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ai_pool","templateId":"251212101","templateUrl":"https://www.jotform.com/form-templates/patient-history-check-in-form","title":"Patient History Check-In Form","isGraduated":true,"gscClicks30d":8,"organicSessions":5,"totalCloneCount30d":1,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-12","campaignName":"#Ai Pool Flow- [2025-12-12]","campaignCreationDate":"2025-12-12","category":"ai_pool","templateId":"251212102","templateUrl":"https://www.jotform.com/form-templates/motor-controller-repair-estimate-form","title":"Motor Controller Repair Estimate Form","isGraduated":false,"gscClicks30d":1,"organicSessions":0,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-13","campaignName":"#Ugc Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ugc_flow","templateId":"251213001","templateUrl":"https://www.jotform.com/form-templates/contractor-onboarding-form","title":"Contractor Onboarding Form","isGraduated":true,"gscClicks30d":13,"organicSessions":9,"totalCloneCount30d":2,"signupCount30d":1,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-13","campaignName":"#Ugc Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ugc_flow","templateId":"251213002","templateUrl":"https://www.jotform.com/form-templates/client-kickoff-brief-form","title":"Client Kickoff Brief Form","isGraduated":true,"gscClicks30d":10,"organicSessions":8,"totalCloneCount30d":2,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-13","campaignName":"#Ai Pool Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ai_pool","templateId":"251213101","templateUrl":"https://www.jotform.com/form-templates/high-voltage-incident-report-form","title":"High Voltage Incident Report Form","isGraduated":true,"gscClicks30d":6,"organicSessions":3,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-13","campaignName":"#Ai Pool Flow- [2025-12-13]","campaignCreationDate":"2025-12-13","category":"ai_pool","templateId":"251213102","templateUrl":"https://www.jotform.com/form-templates/backup-generator-diagnostic-form","title":"Backup Generator Diagnostic Form","isGraduated":false,"gscClicks30d":1,"organicSessions":0,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-14","campaignName":"#Ugc Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ugc_flow","templateId":"251214001","templateUrl":"https://www.jotform.com/form-templates/property-handover-checklist-form","title":"Property Handover Checklist Form","isGraduated":true,"gscClicks30d":18,"organicSessions":14,"totalCloneCount30d":3,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-14","campaignName":"#Ugc Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ugc_flow","templateId":"251214002","templateUrl":"https://www.jotform.com/form-templates/roof-leak-assessment-form","title":"Roof Leak Assessment Form","isGraduated":true,"gscClicks30d":11,"organicSessions":8,"totalCloneCount30d":2,"signupCount30d":1,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-14","campaignName":"#Ai Pool Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ai_pool","templateId":"251214101","templateUrl":"https://www.jotform.com/form-templates/turbine-maintenance-authorization-form","title":"Turbine Maintenance Authorization Form","isGraduated":true,"gscClicks30d":5,"organicSessions":2,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ai-pool-2025-12-14","campaignName":"#Ai Pool Flow- [2025-12-14]","campaignCreationDate":"2025-12-14","category":"ai_pool","templateId":"251214102","templateUrl":"https://www.jotform.com/form-templates/boiler-valve-calibration-form","title":"Boiler Valve Calibration Form","isGraduated":false,"gscClicks30d":2,"organicSessions":1,"totalCloneCount30d":0,"signupCount30d":0,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-15","campaignName":"#Ugc Flow- [2025-12-15]","campaignCreationDate":"2025-12-15","category":"ugc_flow","templateId":"251215001","templateUrl":"https://www.jotform.com/form-templates/roofing-supplier-quote-form","title":"Roofing Supplier Quote Form","isGraduated":true,"gscClicks30d":20,"organicSessions":16,"totalCloneCount30d":4,"signupCount30d":2,"p30Count30d":0},{"campaignId":"ugc-flow-2025-12-15","campaignName":"#Ugc Flow- [2025-12-15]","campaignCreationDate":"2025-12-15","category":"ugc_flow","templateId":"251215002","templateUrl":"https://www.jotform.com/form-templates/kitchen-renovation-intake-form","title":"Kitchen Renovation Intake Form","isGraduated":true,"gscClicks30d":14,"organicSessions":11,"totalCloneCount30d":3,"signupCount30d":1,"p30Count30d":0}]},"reviewState":{"version":1,"updatedAt":"2026-05-15T08:55:00.000Z","updatedBy":"Ceren","sourceFileName":"sample-review-state","items":[{"id":"251212001","templateId":"251212001","templateUrl":"https://www.jotform.com/form-templates/warehouse-safety-inspection-form","campaignName":"#Ugc Flow- [2025-12-12]","displayCampaign":"ugc_flow","reviewDecision":"Pass","reviewStatus":"Reviewed","reviewNotes":"Strong use-case match and no obvious structural issues.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251212002","templateId":"251212002","templateUrl":"https://www.jotform.com/form-templates/landscaping-bid-request-form","campaignName":"#Ugc Flow- [2025-12-12]","displayCampaign":"ugc_flow","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"FAQ is too generic and does not match the contractor bid flow well enough.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Fail","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251212101","templateId":"251212101","templateUrl":"https://www.jotform.com/form-templates/patient-history-check-in-form","campaignName":"#Ai Pool Flow- [2025-12-12]","displayCampaign":"ai_pool","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"Template is short for the use case and misses expected intake structure.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Fail","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251213001","templateId":"251213001","templateUrl":"https://www.jotform.com/form-templates/contractor-onboarding-form","campaignName":"#Ugc Flow- [2025-12-13]","displayCampaign":"ugc_flow","reviewDecision":"Pass","reviewStatus":"Reviewed","reviewNotes":"Solid structure and appropriate fields for the workflow.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251213002","templateId":"251213002","templateUrl":"https://www.jotform.com/form-templates/client-kickoff-brief-form","campaignName":"#Ugc Flow- [2025-12-13]","displayCampaign":"ugc_flow","reviewDecision":"Pass","reviewStatus":"Reviewed","reviewNotes":"Review clean and aligned with the template title and use case.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251213101","templateId":"251213101","templateUrl":"https://www.jotform.com/form-templates/high-voltage-incident-report-form","campaignName":"#Ai Pool Flow- [2025-12-13]","displayCampaign":"ai_pool","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"The use case leans into sensitive operational incident details that should be tightened.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Fail"}},{"id":"251214001","templateId":"251214001","templateUrl":"https://www.jotform.com/form-templates/property-handover-checklist-form","campaignName":"#Ugc Flow- [2025-12-14]","displayCampaign":"ugc_flow","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"Use-case structure is close, but the title and a key handover section still need cleanup.","checks":{"titleReview":"Fail","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Fail","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251214002","templateId":"251214002","templateUrl":"https://www.jotform.com/form-templates/roof-leak-assessment-form","campaignName":"#Ugc Flow- [2025-12-14]","displayCampaign":"ugc_flow","reviewDecision":"Pending","reviewStatus":"Pending","reviewNotes":"","checks":{"titleReview":"Pending","h1EndsWithForm":"Pending","faqReview":"Pending","availableFieldsReview":"Pending","formUseCaseReview":"Pending","fieldCountReview":"Pending","consentRuleReview":"Pending","sensitiveFieldsReview":"Pending"}},{"id":"251214101","templateId":"251214101","templateUrl":"https://www.jotform.com/form-templates/turbine-maintenance-authorization-form","campaignName":"#Ai Pool Flow- [2025-12-14]","displayCampaign":"ai_pool","reviewDecision":"Needs Fix","reviewStatus":"Reviewed","reviewNotes":"The form stays too short for the use case and needs stronger operational fields.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Fail","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251215001","templateId":"251215001","templateUrl":"https://www.jotform.com/form-templates/roofing-supplier-quote-form","campaignName":"#Ugc Flow- [2025-12-15]","displayCampaign":"ugc_flow","reviewDecision":"Pass","reviewStatus":"Reviewed","reviewNotes":"Strong conversion intent and a clean quote structure.","checks":{"titleReview":"Pass","h1EndsWithForm":"Pass","faqReview":"Pass","availableFieldsReview":"Pass","formUseCaseReview":"Pass","fieldCountReview":"Pass","consentRuleReview":"Pass","sensitiveFieldsReview":"Pass"}},{"id":"251215002","templateId":"251215002","templateUrl":"https://www.jotform.com/form-templates/kitchen-renovation-intake-form","campaignName":"#Ugc Flow- [2025-12-15]","displayCampaign":"ugc_flow","reviewDecision":"Pending","reviewStatus":"Pending","reviewNotes":"","checks":{"titleReview":"Pending","h1EndsWithForm":"Pending","faqReview":"Pending","availableFieldsReview":"Pending","formUseCaseReview":"Pending","fieldCountReview":"Pending","consentRuleReview":"Pending","sensitiveFieldsReview":"Pending"}}]}};
+</script>
+<script type="module">
+const SAMPLE_DASHBOARD_STATE_PATH = "./data/sample-dashboard-state.json";
+const SAMPLE_REVIEW_STATE_PATH = "./data/sample-review-state.json";
+const API_ENDPOINT = "./api/dashboard-data";
+const LOCAL_SNAPSHOT_KEY = "adcraft-campaign-live-snapshot-v1";
+const LOCAL_REVIEW_SNAPSHOT_KEY = "adcraft-review-live-state-v1";
+const EMBEDDED_PAYLOAD = readEmbeddedPayload();
+const STATIC_DEPLOY = Boolean(window.__ADCRAFT_STATIC_MODE__);
+
+const CHECK_META = {
+  titleReview: {
+    label: "Title Review",
+    suggestion: "Tighten prompt naming rules and add a pre-publish title lint step.",
+  },
+  h1EndsWithForm: {
+    label: "H1 Ends With Form",
+    suggestion: "Normalize title and H1 generation so template naming lands consistently.",
+  },
+  faqReview: {
+    label: "FAQ Review",
+    suggestion: "Reduce filler FAQ content and bias prompts toward use-case-specific questions.",
+  },
+  availableFieldsReview: {
+    label: "Available Fields",
+    suggestion: "Inspect generation or publishing flow when the Available Fields section disappears.",
+  },
+  formUseCaseReview: {
+    label: "Form-Use Case Field",
+    suggestion: "Refine prompt-to-use-case mapping and verify required operational fields.",
+  },
+  fieldCountReview: {
+    label: "Field Count Review",
+    suggestion: "Strengthen the 10-field rule in the generator and flag short forms before publish.",
+  },
+  consentRuleReview: {
+    label: "Consent Rule Review",
+    suggestion: "Make consent generation conditional so it appears only when the prompt requires it.",
+  },
+  sensitiveFieldsReview: {
+    label: "Sensitive Fields Review",
+    suggestion: "Add stronger sensitive-field blocking before graduation and review high-risk niches first.",
+  },
+};
+
+const numberFormatter = new Intl.NumberFormat("en-US");
+const percentFormatter = new Intl.NumberFormat("en-US", {
+  maximumFractionDigits: 1,
+  style: "percent",
+});
+const decimalFormatter = new Intl.NumberFormat("en-US", {
+  maximumFractionDigits: 2,
+  minimumFractionDigits: 2,
+});
+const dateLongFormatter = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  day: "numeric",
+  year: "numeric",
+});
+
+const elements = {
+  syncMode: document.getElementById("sync-mode"),
+  syncDetail: document.getElementById("sync-detail"),
+  syncTimestamp: document.getElementById("sync-timestamp"),
+  syncScope: document.getElementById("sync-scope"),
+  syncSource: document.getElementById("sync-source"),
+  bookmarkletLink: document.getElementById("bookmarklet-link"),
+  reviewBookmarkletLink: document.getElementById("review-bookmarklet-link"),
+  reviewSyncMode: document.getElementById("review-sync-mode"),
+  reviewSyncSource: document.getElementById("review-sync-source"),
+  refreshData: document.getElementById("refresh-data"),
+  resetSample: document.getElementById("reset-sample"),
+  metricStrip: document.getElementById("metric-strip"),
+  insightStrip: document.getElementById("insight-strip"),
+  funnelCaption: document.getElementById("funnel-caption"),
+  funnelChart: document.getElementById("funnel-chart"),
+  correlationChart: document.getElementById("correlation-chart"),
+  criticsList: document.getElementById("critics-list"),
+  searchFilter: document.getElementById("search-filter"),
+  categoryFilter: document.getElementById("category-filter"),
+  riskFilter: document.getElementById("risk-filter"),
+  campaignCount: document.getElementById("campaign-count"),
+  campaignList: document.getElementById("campaign-list"),
+  patternList: document.getElementById("pattern-list"),
+  detailEmpty: document.getElementById("detail-empty"),
+  detailView: document.getElementById("detail-view"),
+  detailHealth: document.getElementById("detail-health"),
+  detailTitle: document.getElementById("detail-title"),
+  detailMeta: document.getElementById("detail-meta"),
+  detailSummary: document.getElementById("detail-summary"),
+  detailFlags: document.getElementById("detail-flags"),
+  detailMetrics: document.getElementById("detail-metrics"),
+  detailReviewMetrics: document.getElementById("detail-review-metrics"),
+  detailSuggestions: document.getElementById("detail-suggestions"),
+  templateSummary: document.getElementById("template-summary"),
+  templateList: document.getElementById("template-list"),
+};
+
+const state = {
+  campaignStatePayload: { campaignRows: [], templateRows: [], meta: {} },
+  campaigns: [],
+  filteredCampaigns: [],
+  selectedCampaignId: null,
+  globalCritics: [],
+  globalPatterns: [],
+  correlation: null,
+  reviewStatePayload: { items: [] },
+  sync: {
+    mode: "loading",
+    detail: "Checking whether a shared campaign snapshot is available.",
+    sourceLabel: "",
+    sourceUrl: "",
+    syncedAt: "",
+  },
+  reviewSync: {
+    mode: "sample",
+    sourceLabel: "Bundled review sample",
+    sourceUrl: "",
+    syncedAt: "",
+  },
+  meta: {},
+  filters: {
+    search: "",
+    category: "all",
+    risk: "all",
+  },
+};
+
+boot();
+
+async function boot() {
+  bindEvents();
+  elements.bookmarkletLink.href = createBookmarkletHref(window.location.href);
+  elements.reviewBookmarkletLink.href = createReviewBookmarkletHref(window.location.href);
+  await loadDashboardData();
+  applyReviewSnapshotIfNewer();
+  applyBrowserSnapshotIfNewer();
+}
+
+function bindEvents() {
+  window.addEventListener("message", handleLiveSnapshotMessage);
+  window.addEventListener("message", handleReviewSnapshotMessage);
+
+  elements.refreshData.addEventListener("click", async () => {
+    await loadDashboardData();
+    applyReviewSnapshotIfNewer();
+    applyBrowserSnapshotIfNewer();
+  });
+
+  elements.resetSample.addEventListener("click", async () => {
+    await loadDashboardData({ sampleOnly: true });
+  });
+
+  elements.searchFilter.addEventListener("input", (event) => {
+    state.filters.search = event.target.value.trim().toLowerCase();
+    render();
+  });
+
+  elements.categoryFilter.addEventListener("change", (event) => {
+    state.filters.category = event.target.value;
+    render();
+  });
+
+  elements.riskFilter.addEventListener("change", (event) => {
+    state.filters.risk = event.target.value;
+    render();
+  });
+}
+
+async function loadDashboardData({ sampleOnly = false } = {}) {
+  try {
+    const payload = sampleOnly ? await loadSamplePayload() : await fetchDashboardPayload();
+    hydrateState(payload);
+  } catch (error) {
+    const payload = await loadSamplePayload();
+    hydrateState(payload);
+  }
+
+  render();
+}
+
+async function fetchDashboardPayload() {
+  const response = await fetch(API_ENDPOINT, { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Dashboard API failed with ${response.status}`);
+  }
+
+  return response.json();
+}
+
+async function loadSamplePayload() {
+  const embeddedPayload = cloneEmbeddedPayload();
+  const campaignState = embeddedPayload?.campaignState
+    ? embeddedPayload.campaignState
+    : await fetchJson(SAMPLE_DASHBOARD_STATE_PATH);
+  let reviewState;
+
+  if (embeddedPayload?.reviewState) {
+    reviewState = embeddedPayload.reviewState;
+  } else {
+    try {
+      reviewState = await fetchSharedReviewState();
+    } catch (error) {
+      reviewState = await fetchJson(SAMPLE_REVIEW_STATE_PATH);
+    }
+  }
+
+  return {
+    campaignState,
+    reviewState,
+    sync: {
+      mode: "sample",
+      detail: STATIC_DEPLOY
+        ? "Static mode is active. Run Sync Campaign Data on the internal dashboard and Sync Review Data on the review dashboard to replace these demo values in this browser."
+        : "Sample mode is active. Deploy this app on Vercel, connect the shared review store, and run the bookmarklet from the internal Campaign Details page to replace these demo values.",
+      sourceLabel: "Bundled sample",
+      sourceUrl: "",
+      syncedAt: campaignState?.meta?.syncedAt || "",
+    },
+    reviewSync: {
+      mode: "sample",
+      sourceLabel: embeddedPayload?.reviewState?.sourceFileName || "Bundled review sample",
+      sourceUrl: "",
+      syncedAt: reviewState?.updatedAt || "",
+    },
+  };
+}
+
+async function fetchSharedReviewState() {
+  const candidates = ["../api/data", "/api/data"];
+
+  for (const candidate of candidates) {
+    try {
+      const response = await fetch(candidate, { cache: "no-store" });
+      if (!response.ok) continue;
+      const payload = await response.json();
+      if (!Array.isArray(payload.items)) continue;
+
+      return {
+        version: 1,
+        updatedAt: payload.updatedAt || "",
+        updatedBy: payload.updatedBy || "",
+        sourceFileName: payload.sourceFileName || "Shared review state",
+        items: payload.items,
+      };
+    } catch (error) {
+      // Try the next candidate.
+    }
+  }
+
+  throw new Error("No shared review API was available.");
+}
+
+function hydrateState(payload) {
+  const campaignState = payload?.campaignState || {};
+  const reviewState = payload?.reviewState || {};
+  const campaignRows = Array.isArray(campaignState.campaignRows)
+    ? campaignState.campaignRows.map((row, index) => normalizeCampaignRow(row, index))
+    : [];
+  const templateRows = Array.isArray(campaignState.templateRows)
+    ? campaignState.templateRows.map((row, index) => normalizeTemplateRow(row, index))
+    : [];
+  const reviewItems = Array.isArray(reviewState.items)
+    ? reviewState.items.map((item, index) => normalizeReviewItem(item, index))
+    : [];
+
+  const analysis = analyzeCampaigns({
+    campaignRows,
+    templateRows,
+    reviewItems,
+  });
+
+  state.campaignStatePayload = campaignState;
+  state.campaigns = analysis.campaigns;
+  state.globalCritics = analysis.globalCritics;
+  state.globalPatterns = analysis.globalPatterns;
+  state.correlation = analysis.correlation;
+  state.meta = campaignState.meta || {};
+  state.reviewStatePayload = reviewState;
+  state.sync = {
+    mode: payload?.sync?.mode || "sample",
+    detail: payload?.sync?.detail || "Sample mode is active.",
+    sourceLabel:
+      payload?.sync?.sourceLabel ||
+      campaignState?.meta?.sourcePage ||
+      reviewState?.sourceFileName ||
+      "Bundled sample",
+    sourceUrl: campaignState?.meta?.sourcePage || "",
+    syncedAt:
+      payload?.sync?.syncedAt ||
+      campaignState?.meta?.syncedAt ||
+      reviewState?.updatedAt ||
+      "",
+  };
+  state.reviewSync = {
+    mode: payload?.reviewSync?.mode || inferReviewMode(reviewState),
+    sourceLabel:
+      payload?.reviewSync?.sourceLabel ||
+      reviewState?.sourcePage ||
+      reviewState?.sourceFileName ||
+      "Bundled review sample",
+    sourceUrl: payload?.reviewSync?.sourceUrl || reviewState?.sourcePage || "",
+    syncedAt: payload?.reviewSync?.syncedAt || reviewState?.updatedAt || "",
+  };
+
+  if (!state.campaigns.some((campaign) => campaign.id === state.selectedCampaignId)) {
+    state.selectedCampaignId = state.campaigns[0]?.id || null;
+  }
+}
+
+function handleLiveSnapshotMessage(event) {
+  const payload = event?.data;
+  if (!payload || payload.type !== "adcraft-live-sync-snapshot") {
+    return;
+  }
+
+  const campaignState = normalizeIncomingSnapshot(payload.payload);
+  if (!campaignState) {
+    return;
+  }
+
+  persistBrowserSnapshot(campaignState);
+  hydrateState({
+    campaignState,
+    reviewState: state.reviewStatePayload,
+    sync: {
+      mode: "browser",
+      detail:
+        "A live browser snapshot is active in this browser. Run the bookmarklet again whenever you want to refresh the 7 campaigns in scope.",
+      sourceLabel: campaignState.meta?.sourcePage || "Browser live snapshot",
+      syncedAt: campaignState.meta?.syncedAt || "",
+    },
+  });
+  render();
+}
+
+function handleReviewSnapshotMessage(event) {
+  const payload = event?.data;
+  if (!payload || payload.type !== "adcraft-review-sync-snapshot") {
+    return;
+  }
+
+  const reviewState = normalizeIncomingReviewSnapshot(payload.payload);
+  if (!reviewState) {
+    return;
+  }
+
+  persistReviewSnapshot(reviewState);
+  hydrateState({
+    campaignState: state.campaignStatePayload,
+    reviewState,
+    sync: state.sync,
+    reviewSync: {
+      mode: "browser",
+      sourceLabel: reviewState.sourcePage || reviewState.sourceFileName || "Browser review snapshot",
+      sourceUrl: reviewState.sourcePage || "",
+      syncedAt: reviewState.updatedAt || "",
+    },
+  });
+  render();
+}
+
+function applyBrowserSnapshotIfNewer() {
+  const stored = readBrowserSnapshot();
+  if (!stored) return;
+
+  const storedTime = Date.parse(stored.meta?.syncedAt || "");
+  const currentTime = Date.parse(state.sync.syncedAt || "");
+  const shouldUseStored =
+    state.sync.mode === "sample" ||
+    (Number.isFinite(storedTime) &&
+      (!Number.isFinite(currentTime) || storedTime >= currentTime));
+
+  if (!shouldUseStored) return;
+
+  hydrateState({
+    campaignState: stored,
+    reviewState: state.reviewStatePayload,
+    sync: {
+      mode: "browser",
+      detail:
+        "A live browser snapshot is active in this browser. Run the bookmarklet again whenever you want to refresh the 7 campaigns in scope.",
+      sourceLabel: stored.meta?.sourcePage || "Browser live snapshot",
+      syncedAt: stored.meta?.syncedAt || "",
+    },
+  });
+  render();
+}
+
+function applyReviewSnapshotIfNewer() {
+  const stored = readReviewSnapshot();
+  if (!stored) return;
+
+  const storedTime = Date.parse(stored.updatedAt || "");
+  const currentTime = Date.parse(state.reviewSync.syncedAt || "");
+  const shouldUseStored =
+    state.reviewSync.mode === "sample" ||
+    (Number.isFinite(storedTime) &&
+      (!Number.isFinite(currentTime) || storedTime >= currentTime));
+
+  if (!shouldUseStored) return;
+
+  hydrateState({
+    campaignState: state.campaignStatePayload,
+    reviewState: stored,
+    sync: state.sync,
+    reviewSync: {
+      mode: "browser",
+      sourceLabel: stored.sourcePage || stored.sourceFileName || "Browser review snapshot",
+      sourceUrl: stored.sourcePage || "",
+      syncedAt: stored.updatedAt || "",
+    },
+  });
+  render();
+}
+
+function analyzeCampaigns({ campaignRows, templateRows, reviewItems }) {
+  const templateLookups = buildTemplateLookups(templateRows);
+  const matchedReviews = reviewItems.map((review) => ({
+    ...review,
+    matchedTemplate: matchReviewToTemplate(review, templateLookups),
+  }));
+  const benchmarks = buildBenchmarks(matchedReviews);
+
+  const campaigns = campaignRows
+    .map((campaignRow) =>
+      decorateCampaign(
+        campaignRow,
+        getTemplatesForCampaign(campaignRow, templateRows),
+        getReviewsForCampaign(campaignRow, matchedReviews),
+        benchmarks,
+      ),
+    )
+    .sort((left, right) => left.campaignCreationDate.localeCompare(right.campaignCreationDate));
+
+  const correlationValue = computeCorrelation(
+    campaigns
+      .map((campaign) => [campaign.graduationRate, campaign.estimatedCleanRate])
+      .filter(([left, right]) => left !== null && right !== null),
+  );
+
+  const correlation = {
+    value: correlationValue,
+    label: describeCorrelation(correlationValue),
+  };
+
+  const globalCritics = buildGlobalCritics(matchedReviews);
+  const globalPatterns = buildGlobalPatterns(campaigns, benchmarks, correlation);
+
+  return {
+    campaigns,
+    globalCritics,
+    globalPatterns,
+    correlation,
+  };
+}
+
+function buildTemplateLookups(templateRows) {
+  const byId = new Map();
+  const byUrl = new Map();
+
+  templateRows.forEach((row) => {
+    if (row.templateId) byId.set(row.templateId, row);
+    if (row.templateUrl) byUrl.set(normalizeUrl(row.templateUrl), row);
+  });
+
+  return { byId, byUrl };
+}
+
+function matchReviewToTemplate(review, lookups) {
+  if (review.templateId && lookups.byId.has(review.templateId)) {
+    return lookups.byId.get(review.templateId);
+  }
+
+  if (review.templateUrl) {
+    const normalizedUrl = normalizeUrl(review.templateUrl);
+    if (lookups.byUrl.has(normalizedUrl)) {
+      return lookups.byUrl.get(normalizedUrl);
+    }
+  }
+
+  return null;
+}
+
+function getTemplatesForCampaign(campaign, templateRows) {
+  const campaignKey = buildCampaignKey(campaign);
+  const campaignNameKey = normalizeToken(campaign.campaignName);
+  const campaignIdKey = normalizeToken(campaign.campaignId);
+
+  return templateRows.filter((template) => {
+    const templateKey = buildCampaignKey(template);
+    return (
+      templateKey === campaignKey ||
+      (campaignIdKey && normalizeToken(template.campaignId) === campaignIdKey) ||
+      (campaignNameKey && normalizeToken(template.campaignName) === campaignNameKey)
+    );
+  });
+}
+
+function getReviewsForCampaign(campaign, reviews) {
+  const campaignKey = buildCampaignKey(campaign);
+  const campaignIdKey = normalizeToken(campaign.campaignId);
+  const campaignNameKey = normalizeToken(campaign.campaignName);
+
+  return reviews.filter((review) => {
+    if (review.matchedTemplate) {
+      return (
+        buildCampaignKey(review.matchedTemplate) === campaignKey ||
+        (campaignIdKey && normalizeToken(review.matchedTemplate.campaignId) === campaignIdKey) ||
+        (campaignNameKey &&
+          normalizeToken(review.matchedTemplate.campaignName) === campaignNameKey)
+      );
+    }
+
+    return normalizeToken(review.campaignName) === campaignNameKey;
+  });
+}
+
+function buildBenchmarks(reviews) {
+  const reviewedGraduates = reviews.filter(
+    (review) => review.isReviewed && review.matchedTemplate?.isGraduated,
+  );
+  const reviewedNonGraduates = reviews.filter(
+    (review) => review.isReviewed && review.matchedTemplate && !review.matchedTemplate.isGraduated,
+  );
+  const byCategory = new Map();
+
+  reviews.forEach((review) => {
+    if (!review.isReviewed) return;
+
+    const category =
+      review.matchedTemplate?.category || review.displayCampaign || "uncategorized";
+    const key = normalizeToken(category);
+    const bucket = byCategory.get(key) || {
+      reviewedGraduates: 0,
+      failedGraduates: 0,
+    };
+
+    if (review.matchedTemplate?.isGraduated) {
+      bucket.reviewedGraduates += 1;
+      if (review.reviewDecision !== "Pass") {
+        bucket.failedGraduates += 1;
+      }
+    }
+
+    byCategory.set(key, bucket);
+  });
+
+  return {
+    graduateFailRate: ratio(
+      reviewedGraduates.filter((review) => review.reviewDecision !== "Pass").length,
+      reviewedGraduates.length,
+    ),
+    nonGraduateFailRate: ratio(
+      reviewedNonGraduates.filter((review) => review.reviewDecision !== "Pass").length,
+      reviewedNonGraduates.length,
+    ),
+    byCategory,
+    reviewedGraduateCount: reviewedGraduates.length,
+  };
+}
+
+function decorateCampaign(campaign, templates, reviews, benchmarks) {
+  const generatedTemplates = firstDefined(campaign.generatedTemplates, templates.length);
+  const graduatedTemplates =
+    firstDefined(
+      campaign.graduatedTemplates,
+      templates.filter((template) => template.isGraduated).length,
+    ) || 0;
+  const trashedTemplates =
+    firstDefined(
+      campaign.trashedTemplates,
+      generatedTemplates !== null ? Math.max(generatedTemplates - graduatedTemplates, 0) : null,
+    ) || 0;
+  const graduationRate = ratio(graduatedTemplates, generatedTemplates);
+  const trashRate = ratio(trashedTemplates, generatedTemplates);
+  const gscClicks = firstDefined(
+    campaign.gscClicks,
+    sumNullable(templates.map((template) => template.gscClicks30d)),
+  );
+  const organicTraffic = firstDefined(
+    campaign.organicTraffic,
+    sumNullable(templates.map((template) => template.organicSessions)),
+  );
+  const totalTemplateClones = firstDefined(
+    campaign.totalTemplateClones,
+    sumNullable(templates.map((template) => firstDefined(template.totalCloneCount30d, template.totalCloneCount))),
+  );
+  const totalSignups = firstDefined(
+    campaign.totalSignups,
+    sumNullable(templates.map((template) => firstDefined(template.signupCount30d, template.totalSignupCount))),
+  );
+  const totalP30 = firstDefined(
+    campaign.totalP30,
+    sumNullable(templates.map((template) => template.p30Count30d)),
+  );
+
+  const reviewedItems = reviews.filter((review) => review.isReviewed);
+  const pendingItems = reviews.filter((review) => !review.isReviewed);
+  const reviewedGraduates = reviewedItems.filter((review) => review.matchedTemplate?.isGraduated);
+  const graduateFails = reviewedGraduates.filter((review) => review.reviewDecision !== "Pass");
+  const graduateReviewCoverage = ratio(reviewedGraduates.length, graduatedTemplates);
+  const observedGraduateFailRate = ratio(graduateFails.length, reviewedGraduates.length);
+  const categoryKey = normalizeToken(campaign.category || templates[0]?.category || "uncategorized");
+  const categoryBenchmark = benchmarks.byCategory.get(categoryKey);
+  const fallbackFailRate =
+    observedGraduateFailRate ??
+    ratio(categoryBenchmark?.failedGraduates, categoryBenchmark?.reviewedGraduates) ??
+    benchmarks.graduateFailRate ??
+    0.35;
+  const unreviewedGraduates = Math.max(graduatedTemplates - reviewedGraduates.length, 0);
+  const estimatedAtRiskGraduates =
+    graduatedTemplates === 0
+      ? 0
+      : Math.min(
+          graduatedTemplates,
+          graduateFails.length + Math.round(unreviewedGraduates * fallbackFailRate),
+        );
+  const estimatedCleanGraduates = Math.max(graduatedTemplates - estimatedAtRiskGraduates, 0);
+  const estimatedCleanRate = ratio(estimatedCleanGraduates, graduatedTemplates);
+  const topCritics = deriveTopCritics(reviewedItems);
+  const flags = [];
+
+  if (graduationRate !== null && graduationRate < 0.2) {
+    flags.push({ tone: "critical", label: "Graduation rate below 20%" });
+  } else if (graduationRate !== null && graduationRate < 0.3) {
+    flags.push({ tone: "watch", label: "Graduation rate below 30%" });
+  }
+
+  if (trashRate !== null && trashRate >= 0.75) {
+    flags.push({ tone: "critical", label: "Trash rate above 75%" });
+  } else if (trashRate !== null && trashRate >= 0.6) {
+    flags.push({ tone: "watch", label: "Trash rate above 60%" });
+  }
+
+  if (graduatedTemplates > 0 && firstDefined(organicTraffic, 0) === 0) {
+    flags.push({ tone: "critical", label: "Graduated but no organic traffic" });
+  }
+
+  if (graduateReviewCoverage !== null && graduateReviewCoverage < 0.08) {
+    flags.push({ tone: "critical", label: "Very low review coverage on graduates" });
+  } else if (graduateReviewCoverage !== null && graduateReviewCoverage < 0.2) {
+    flags.push({ tone: "watch", label: "Graduate review coverage is thin" });
+  }
+
+  const estimatedRiskRate = ratio(estimatedAtRiskGraduates, graduatedTemplates);
+  if (estimatedRiskRate !== null && estimatedRiskRate >= 0.45) {
+    flags.push({ tone: "critical", label: "Many graduates are likely review-risky" });
+  } else if (estimatedRiskRate !== null && estimatedRiskRate >= 0.25) {
+    flags.push({ tone: "watch", label: "Graduate review risk is elevated" });
+  }
+
+  if (gscClicks !== null && gscClicks >= 20 && firstDefined(totalSignups, 0) === 0) {
+    flags.push({ tone: "watch", label: "Search clicks without signups" });
+  }
+
+  if (topCritics[0]?.key === "sensitiveFieldsReview") {
+    flags.push({ tone: "critical", label: "Sensitive field failures lead review risk" });
+  } else if (topCritics[0]?.key === "fieldCountReview") {
+    flags.push({ tone: "watch", label: "Field count failures keep recurring" });
+  }
+
+  let healthScore = 100;
+  healthScore -= flags.reduce(
+    (total, flag) => total + (flag.tone === "critical" ? 20 : 10),
+    0,
+  );
+  healthScore = Math.max(0, Math.min(100, Math.round(healthScore)));
+
+  const healthBucket =
+    flags.some((flag) => flag.tone === "critical") || healthScore < 45
+      ? "critical"
+      : flags.some((flag) => flag.tone === "watch") || healthScore < 72
+        ? "watch"
+        : "healthy";
+
+  return {
+    ...campaign,
+    templates,
+    reviews,
+    generatedTemplates,
+    graduatedTemplates,
+    trashedTemplates,
+    graduationRate,
+    trashRate,
+    gscClicks,
+    organicTraffic,
+    totalTemplateClones,
+    totalSignups,
+    totalP30,
+    reviewedItems,
+    pendingItems,
+    reviewedGraduates,
+    graduateReviewCoverage,
+    estimatedAtRiskGraduates,
+    estimatedCleanGraduates,
+    estimatedCleanRate,
+    topCritics,
+    flags,
+    healthScore,
+    healthBucket,
+  };
+}
+
+function deriveTopCritics(reviewedItems) {
+  const counts = new Map();
+
+  reviewedItems.forEach((review) => {
+    Object.entries(review.checks).forEach(([key, value]) => {
+      if (value !== "Fail") return;
+      counts.set(key, (counts.get(key) || 0) + 1);
+    });
+  });
+
+  return [...counts.entries()]
+    .map(([key, count]) => ({
+      key,
+      label: CHECK_META[key]?.label || key,
+      count,
+      suggestion: CHECK_META[key]?.suggestion || "Tighten this review rule in generation.",
+    }))
+    .sort((left, right) => right.count - left.count);
+}
+
+function buildGlobalCritics(reviews) {
+  const counts = new Map();
+  const campaignMap = new Map();
+
+  reviews
+    .filter((review) => review.isReviewed)
+    .forEach((review) => {
+      Object.entries(review.checks).forEach(([key, value]) => {
+        if (value !== "Fail") return;
+        counts.set(key, (counts.get(key) || 0) + 1);
+        const campaignKey = review.campaignName || review.matchedTemplate?.campaignName || "Unknown";
+        const set = campaignMap.get(key) || new Set();
+        set.add(campaignKey);
+        campaignMap.set(key, set);
+      });
+    });
+
+  const maxCount = Math.max(...counts.values(), 1);
+
+  return [...counts.entries()]
+    .map(([key, count]) => ({
+      key,
+      label: CHECK_META[key]?.label || key,
+      count,
+      normalizedScore: count / maxCount,
+      campaignsImpacted: campaignMap.get(key)?.size || 0,
+      suggestion: CHECK_META[key]?.suggestion || "Tighten this review rule in generation.",
+    }))
+    .sort((left, right) => right.count - left.count)
+    .slice(0, 5);
+}
+
+function buildGlobalPatterns(campaigns, benchmarks, correlation) {
+  const lowCoverageCount = campaigns.filter(
+    (campaign) =>
+      campaign.graduateReviewCoverage !== null && campaign.graduateReviewCoverage < 0.2,
+  ).length;
+  const highRiskCount = campaigns.filter(
+    (campaign) =>
+      ratio(campaign.estimatedAtRiskGraduates, campaign.graduatedTemplates) !== null &&
+      ratio(campaign.estimatedAtRiskGraduates, campaign.graduatedTemplates) >= 0.25,
+  ).length;
+  const highClickLowSignup = campaigns.filter(
+    (campaign) => firstDefined(campaign.gscClicks, 0) >= 20 && firstDefined(campaign.totalSignups, 0) === 0,
+  ).length;
+
+  return [
+    {
+      title: "Review failures vs graduation",
+      body:
+        benchmarks.graduateFailRate !== null && benchmarks.nonGraduateFailRate !== null
+          ? benchmarks.nonGraduateFailRate > benchmarks.graduateFailRate
+            ? `Reviewed non-graduates fail review ${percentFormatter.format(
+                benchmarks.nonGraduateFailRate,
+              )}, versus ${percentFormatter.format(
+                benchmarks.graduateFailRate,
+              )} for reviewed graduates. Review quality is likely part of the graduation gap.`
+            : `Reviewed graduates and non-graduates fail at similar rates. Graduation is not being explained by review criteria alone.`
+          : "Not enough reviewed templates are matched yet to compare graduates and non-graduates.",
+    },
+    {
+      title: "Coverage warning",
+      body:
+        lowCoverageCount > 0
+          ? `${lowCoverageCount} campaigns have thin graduate review coverage, so the risk estimate still has uncertainty.`
+          : "Graduate review coverage looks healthy across the current campaign set.",
+    },
+    {
+      title: "Conversion warning",
+      body:
+        highClickLowSignup > 0
+          ? `${highClickLowSignup} campaigns are getting search clicks without signups. Graduation is not the only quality gate that needs attention.`
+          : "No campaign currently stands out as a click-without-signup problem.",
+    },
+    {
+      title: "Correlation read",
+      body: `Graduation vs review cleanliness is ${correlation.label}. ${
+        highRiskCount
+          ? `${highRiskCount} campaigns still carry elevated estimated review risk after graduation.`
+          : "The current synced campaigns are not showing major post-graduation review pressure."
+      }`,
+    },
+  ];
+}
+
+function render() {
+  state.filteredCampaigns = applyFilters(state.campaigns, state.filters);
+
+  if (!state.filteredCampaigns.some((campaign) => campaign.id === state.selectedCampaignId)) {
+    state.selectedCampaignId = state.filteredCampaigns[0]?.id || null;
+  }
+
+  syncFilterOptions();
+  renderSyncCard();
+  renderSummary();
+  renderInsights();
+  renderFunnelChart();
+  renderCorrelationChart();
+  renderCritics();
+  renderCampaignList();
+  renderPatterns();
+  renderDetail();
+}
+
+function renderSyncCard() {
+  elements.syncMode.textContent =
+    state.sync.mode === "shared"
+      ? "Shared live snapshot ready"
+      : state.sync.mode === "browser"
+        ? "Browser live snapshot ready"
+        : "Sample preview mode";
+  elements.syncDetail.textContent = state.sync.detail;
+  elements.syncTimestamp.textContent = formatDateTimeSafe(state.sync.syncedAt);
+  elements.syncScope.textContent = `${state.campaigns.length || 0} campaigns synced`;
+
+  if (state.sync.sourceUrl) {
+    elements.syncSource.innerHTML = `<a href="${escapeHtml(
+      state.sync.sourceUrl,
+    )}" target="_blank" rel="noreferrer">${escapeHtml(state.sync.sourceLabel)}</a>`;
+  } else {
+    elements.syncSource.textContent = state.sync.sourceLabel || "—";
+  }
+
+  elements.reviewSyncMode.textContent =
+    state.reviewSync.mode === "browser"
+      ? `Live review sync · ${formatDateTimeSafe(state.reviewSync.syncedAt)}`
+      : "Bundled review sample";
+
+  if (state.reviewSync.sourceUrl) {
+    elements.reviewSyncSource.innerHTML = `<a href="${escapeHtml(
+      state.reviewSync.sourceUrl,
+    )}" target="_blank" rel="noreferrer">${escapeHtml(state.reviewSync.sourceLabel)}</a>`;
+  } else {
+    elements.reviewSyncSource.textContent = state.reviewSync.sourceLabel || "—";
+  }
+}
+
+function renderSummary() {
+  const totals = summarizeCampaigns(state.filteredCampaigns);
+  const cards = [
+    {
+      label: "Campaigns",
+      value: formatNumberOrDash(totals.count),
+      hint: "Campaigns in the current synced scope",
+    },
+    {
+      label: "Generated Templates",
+      value: formatNumberOrDash(totals.generatedTemplates),
+      hint: "Exact count from Campaign Details",
+    },
+    {
+      label: "Graduated Templates",
+      value: formatNumberOrDash(totals.graduatedTemplates),
+      hint: totals.generatedTemplates
+        ? `${percentFormatter.format(totals.graduatedTemplates / totals.generatedTemplates)} graduation rate`
+        : "No generated template count",
+    },
+    {
+      label: "GSC Clicks",
+      value: formatNumberOrDash(totals.gscClicks),
+      hint: "Aggregated from live template metrics",
+    },
+    {
+      label: "Organic Traffic",
+      value: formatNumberOrDash(totals.organicTraffic),
+      hint: "Organic sessions after graduation",
+    },
+    {
+      label: "Template Clones",
+      value: formatNumberOrDash(totals.totalTemplateClones),
+      hint: "Total clone volume across synced campaigns",
+    },
+    {
+      label: "Signups",
+      value: formatNumberOrDash(totals.totalSignups),
+      hint: "Total signups from these campaigns",
+    },
+    {
+      label: "Estimated Risky Graduates",
+      value: formatNumberOrDash(totals.estimatedAtRiskGraduates),
+      hint: "Graduates likely to need fixes or escalation",
+    },
+  ];
+
+  elements.metricStrip.innerHTML = cards
+    .map(
+      (card) => `
+        <article class="metric-card">
+          <span>${escapeHtml(card.label)}</span>
+          <strong>${escapeHtml(card.value)}</strong>
+          <small>${escapeHtml(card.hint)}</small>
+        </article>
+      `,
+    )
+    .join("");
+}
+
+function renderInsights() {
+  if (!state.filteredCampaigns.length) {
+    elements.insightStrip.innerHTML = `
+      <article class="insight-card">
+        <strong>No campaigns loaded</strong>
+        <span>Run the live sync bookmarklet or switch back to sample mode.</span>
+      </article>
+    `;
+    return;
+  }
+
+  const bestGraduation = [...state.filteredCampaigns].sort(
+    (left, right) => (right.graduationRate ?? -1) - (left.graduationRate ?? -1),
+  )[0];
+  const biggestRisk = [...state.filteredCampaigns].sort(
+    (left, right) =>
+      ratio(right.estimatedAtRiskGraduates, right.graduatedTemplates) -
+      ratio(left.estimatedAtRiskGraduates, left.graduatedTemplates),
+  )[0];
+  const mainCritic = state.globalCritics[0];
+
+  const insights = [
+    {
+      title: "Best graduation rate",
+      body: `${bestGraduation.campaignName} is leading at ${formatPercentOrDash(
+        bestGraduation.graduationRate,
+      )}.`,
+    },
+    {
+      title: "Review correlation",
+      body: `Graduation vs review cleanliness is ${state.correlation.label}. ${
+        state.correlation.value !== null ? `r = ${decimalFormatter.format(state.correlation.value)}.` : ""
+      }`,
+    },
+    {
+      title: "Biggest critic right now",
+      body: mainCritic
+        ? `${mainCritic.label} is the top repeated failure, showing up ${formatNumberOrDash(
+            mainCritic.count,
+          )} times across ${formatNumberOrDash(mainCritic.campaignsImpacted)} campaigns.`
+        : `${biggestRisk.campaignName} carries the largest estimated graduate review risk.`,
+    },
+  ];
+
+  elements.insightStrip.innerHTML = insights
+    .map(
+      (insight) => `
+        <article class="insight-card">
+          <strong>${escapeHtml(insight.title)}</strong>
+          <span>${escapeHtml(insight.body)}</span>
+        </article>
+      `,
+    )
+    .join("");
+}
+
+function renderFunnelChart() {
+  elements.funnelCaption.textContent = state.filteredCampaigns.length
+    ? `${state.filteredCampaigns.length} campaigns in view`
+    : "No campaigns in view";
+
+  if (!state.filteredCampaigns.length) {
+    elements.funnelChart.innerHTML = `<div class="empty-collection">No campaigns match the current filters.</div>`;
+    return;
+  }
+
+  elements.funnelChart.innerHTML = `
+    <div class="bar-chart">
+      ${state.filteredCampaigns
+        .map((campaign) => {
+          const generated = campaign.generatedTemplates || 0;
+          const cleanWidth = generated ? (campaign.estimatedCleanGraduates / generated) * 100 : 0;
+          const riskyGraduateWidth = generated
+            ? ((campaign.graduatedTemplates - campaign.estimatedCleanGraduates) / generated) * 100
+            : 0;
+          const trashWidth = generated ? (campaign.trashedTemplates / generated) * 100 : 0;
+
+          return `
+            <article class="bar-row">
+              <header>
+                <strong>${escapeHtml(campaign.campaignName)}</strong>
+                <span class="muted">${escapeHtml(
+                  `${formatPercentOrDash(campaign.graduationRate)} graduation · ${formatPercentOrDash(
+                    campaign.estimatedCleanRate,
+                  )} estimated clean`,
+                )}</span>
+              </header>
+              <div class="bar-track">
+                <span class="bar-segment clean" style="width:${cleanWidth}%"></span>
+                <span class="bar-segment graduated" style="width:${riskyGraduateWidth}%"></span>
+                <span class="bar-segment trashed" style="width:${trashWidth}%"></span>
+              </div>
+              <div class="bar-legend">
+                <span>Clean est. ${escapeHtml(formatNumberOrDash(campaign.estimatedCleanGraduates))}</span>
+                <span>Risky graduates ${escapeHtml(
+                  formatNumberOrDash(campaign.estimatedAtRiskGraduates),
+                )}</span>
+                <span>Trashed ${escapeHtml(formatNumberOrDash(campaign.trashedTemplates))}</span>
+              </div>
+            </article>
+          `;
+        })
+        .join("")}
+    </div>
+  `;
+}
+
+function renderCorrelationChart() {
+  if (!state.filteredCampaigns.length) {
+    elements.correlationChart.innerHTML = `<div class="empty-collection">No campaign correlation to plot.</div>`;
+    return;
+  }
+
+  elements.correlationChart.innerHTML = `
+    <div class="correlation-stage">
+      ${state.filteredCampaigns
+        .filter(
+          (campaign) => campaign.graduationRate !== null && campaign.estimatedCleanRate !== null,
+        )
+        .map((campaign) => {
+          const x = clamp(campaign.graduationRate * 100, 2, 98);
+          const y = clamp(100 - campaign.estimatedCleanRate * 100, 2, 98);
+          return `
+            <div
+              class="correlation-point ${escapeHtml(campaign.healthBucket)}"
+              style="left:${x}%; top:${y}%"
+              title="${escapeHtml(
+                `${campaign.campaignName}: ${formatPercentOrDash(
+                  campaign.graduationRate,
+                )} graduation, ${formatPercentOrDash(
+                  campaign.estimatedCleanRate,
+                )} estimated clean graduates`,
+              )}"
+            >
+              ${escapeHtml(shortCampaignLabel(campaign))}
+            </div>
+          `;
+        })
+        .join("")}
+    </div>
+    <div class="correlation-axes">
+      <span>Lower graduation rate</span>
+      <span>Higher graduation rate</span>
+    </div>
+    <div class="correlation-axes">
+      <span>Cleaner reviews upward</span>
+      <span>${escapeHtml(
+        state.correlation.value !== null
+          ? `Correlation ${decimalFormatter.format(state.correlation.value)}`
+          : "Not enough paired data yet",
+      )}</span>
+    </div>
+  `;
+}
+
+function renderCritics() {
+  if (!state.globalCritics.length) {
+    elements.criticsList.innerHTML = `<div class="empty-collection">No repeated review critics are available yet.</div>`;
+    return;
+  }
+
+  elements.criticsList.innerHTML = state.globalCritics
+    .map(
+      (critic) => `
+        <article class="critic-card">
+          <strong>${escapeHtml(critic.label)}</strong>
+          <small>${escapeHtml(
+            `${formatNumberOrDash(critic.count)} failures across ${formatNumberOrDash(
+              critic.campaignsImpacted,
+            )} campaigns`,
+          )}</small>
+          <div class="critic-meter">
+            <div class="critic-fill" style="width:${Math.round(critic.normalizedScore * 100)}%"></div>
+          </div>
+          <div class="muted">${escapeHtml(critic.suggestion)}</div>
+        </article>
+      `,
+    )
+    .join("");
+}
+
+function renderCampaignList() {
+  elements.campaignCount.textContent = `${state.filteredCampaigns.length} campaigns`;
+
+  if (!state.filteredCampaigns.length) {
+    elements.campaignList.innerHTML = `
+      <div class="empty-collection">
+        No campaigns match these filters.
+      </div>
+    `;
+    return;
+  }
+
+  elements.campaignList.innerHTML = state.filteredCampaigns
+    .map((campaign) => {
+      const activeClass = campaign.id === state.selectedCampaignId ? "active" : "";
+      const topCritic = campaign.topCritics[0];
+      return `
+        <button class="campaign-item ${activeClass}" data-campaign-id="${escapeHtml(
+          campaign.id,
+        )}" type="button">
+          <div class="campaign-topline">
+            <span class="health-chip ${escapeHtml(campaign.healthBucket)}">${escapeHtml(
+              titleCase(campaign.healthBucket),
+            )}</span>
+            <span class="metric-pill">${escapeHtml(formatDateSafe(campaign.campaignCreationDate))}</span>
+            <span class="metric-pill">${escapeHtml(campaign.category || "No category")}</span>
+          </div>
+          <div>
+            <h3>${escapeHtml(campaign.campaignName)}</h3>
+          </div>
+          <div class="campaign-stats">
+            <span class="metric-pill">Grad ${escapeHtml(formatPercentOrDash(campaign.graduationRate))}</span>
+            <span class="metric-pill">GSC ${escapeHtml(formatNumberOrDash(campaign.gscClicks))}</span>
+            <span class="metric-pill">Signups ${escapeHtml(formatNumberOrDash(campaign.totalSignups))}</span>
+            <span class="metric-pill">Review est. ${escapeHtml(
+              formatPercentOrDash(ratio(campaign.estimatedAtRiskGraduates, campaign.graduatedTemplates)),
+            )} risky</span>
+          </div>
+          <p class="muted">${escapeHtml(renderCampaignSummary(campaign, topCritic))}</p>
+        </button>
+      `;
+    })
+    .join("");
+
+  elements.campaignList.querySelectorAll("[data-campaign-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.selectedCampaignId = button.dataset.campaignId;
+      renderDetail();
+      renderCampaignList();
+    });
+  });
+}
+
+function renderPatterns() {
+  elements.patternList.innerHTML = state.globalPatterns
+    .map(
+      (pattern) => `
+        <article class="pattern-card">
+          <strong>${escapeHtml(pattern.title)}</strong>
+          <div class="muted">${escapeHtml(pattern.body)}</div>
+        </article>
+      `,
+    )
+    .join("");
+}
+
+function renderDetail() {
+  const campaign = state.campaigns.find((entry) => entry.id === state.selectedCampaignId);
+
+  if (!campaign) {
+    elements.detailEmpty.classList.remove("hidden");
+    elements.detailView.classList.add("hidden");
+    return;
+  }
+
+  elements.detailEmpty.classList.add("hidden");
+  elements.detailView.classList.remove("hidden");
+  elements.detailHealth.className = `health-chip ${campaign.healthBucket}`;
+  elements.detailHealth.textContent = `${titleCase(campaign.healthBucket)} · Health ${campaign.healthScore}`;
+  elements.detailTitle.textContent = campaign.campaignName;
+  elements.detailMeta.innerHTML = [
+    formatDateSafe(campaign.campaignCreationDate),
+    campaign.category || "No category",
+    campaign.campaignId ? `Campaign ID ${campaign.campaignId}` : "",
+  ]
+    .filter(Boolean)
+    .map((value) => `<span class="metric-pill">${escapeHtml(value)}</span>`)
+    .join("");
+  elements.detailSummary.textContent = renderDetailSummary(campaign);
+  elements.detailFlags.innerHTML = campaign.flags.length
+    ? campaign.flags
+        .map(
+          (flag) =>
+            `<span class="flag ${escapeHtml(flag.tone)}">${escapeHtml(flag.label)}</span>`,
+        )
+        .join("")
+    : `<span class="flag info">No active flags in this filter</span>`;
+
+  const detailMetrics = [
+    ["Generated Templates", campaign.generatedTemplates],
+    ["Graduated Templates", campaign.graduatedTemplates],
+    ["Trashed Templates", campaign.trashedTemplates],
+    ["Graduation Rate", campaign.graduationRate],
+    ["GSC Clicks", campaign.gscClicks],
+    ["Organic Traffic", campaign.organicTraffic],
+    ["Template Clones", campaign.totalTemplateClones],
+    ["Signups", campaign.totalSignups],
+    ["P30 Count", campaign.totalP30],
+    ["Reviewed Items", campaign.reviewedItems.length],
+    ["Pending Review", campaign.pendingItems.length],
+    ["Estimated Clean Graduates", campaign.estimatedCleanGraduates],
+  ];
+
+  elements.detailMetrics.innerHTML = detailMetrics
+    .map(
+      ([label, value]) => `
+        <article class="detail-metric-card">
+          <span>${escapeHtml(label)}</span>
+          <strong>${escapeHtml(
+            label.includes("Rate") ? formatPercentOrDash(value) : formatNumberOrDash(value),
+          )}</strong>
+        </article>
+      `,
+    )
+    .join("");
+
+  const detailReviewMetrics = [
+    {
+      label: "Graduate review coverage",
+      value: formatPercentOrDash(campaign.graduateReviewCoverage),
+      hint: "Reviewed graduates / total graduates",
+    },
+    {
+      label: "Estimated risky graduates",
+      value: formatNumberOrDash(campaign.estimatedAtRiskGraduates),
+      hint: "Reviewed fails plus modeled unreviewed risk",
+    },
+    {
+      label: "Estimated clean graduate rate",
+      value: formatPercentOrDash(campaign.estimatedCleanRate),
+      hint: "Share of graduates likely to pass review cleanly",
+    },
+    {
+      label: "Top review critic",
+      value: campaign.topCritics[0]?.label || "—",
+      hint: campaign.topCritics[0]
+        ? `${campaign.topCritics[0].count} repeated failures`
+        : "No repeated failed checks",
+    },
+  ];
+
+  elements.detailReviewMetrics.innerHTML = detailReviewMetrics
+    .map(
+      (metric) => `
+        <article class="review-metric-card">
+          <span>${escapeHtml(metric.label)}</span>
+          <strong>${escapeHtml(metric.value)}</strong>
+          <small>${escapeHtml(metric.hint)}</small>
+        </article>
+      `,
+    )
+    .join("");
+
+  const suggestions = buildCampaignSuggestions(campaign);
+  elements.detailSuggestions.innerHTML = suggestions
+    .map(
+      (suggestion) => `
+        <article class="suggestion-item">
+          ${escapeHtml(suggestion)}
+        </article>
+      `,
+    )
+    .join("");
+
+  renderTemplateDetail(campaign);
+}
+
+function renderTemplateDetail(campaign) {
+  const templates = [...campaign.templates].sort((left, right) => {
+    const leftRisk = templateRiskWeight(left, campaign.reviews);
+    const rightRisk = templateRiskWeight(right, campaign.reviews);
+    return rightRisk - leftRisk || (right.gscClicks30d || 0) - (left.gscClicks30d || 0);
+  });
+  const reviewMap = new Map(
+    campaign.reviews.map((review) => [review.templateId || normalizeUrl(review.templateUrl), review]),
+  );
+
+  elements.templateSummary.innerHTML = `
+    <div class="template-summary-grid">
+      <article>
+        <span>Matched templates</span>
+        <strong>${escapeHtml(formatNumberOrDash(templates.length))}</strong>
+      </article>
+      <article>
+        <span>Reviewed</span>
+        <strong>${escapeHtml(formatNumberOrDash(campaign.reviewedItems.length))}</strong>
+      </article>
+      <article>
+        <span>Pending</span>
+        <strong>${escapeHtml(formatNumberOrDash(campaign.pendingItems.length))}</strong>
+      </article>
+      <article>
+        <span>Template GSC clicks</span>
+        <strong>${escapeHtml(formatNumberOrDash(sumNullable(templates.map((item) => item.gscClicks30d))))}</strong>
+      </article>
+    </div>
+    <small>
+      These rows are the live template-level matches currently synced for this campaign. Real data will grow or shrink based on the dashboard date filter you synced from support.
+    </small>
+  `;
+
+  if (!templates.length) {
+    elements.templateList.innerHTML = `<div class="empty-collection">No matched template rows were synced for this campaign yet.</div>`;
+    return;
+  }
+
+  elements.templateList.innerHTML = templates
+    .slice(0, 8)
+    .map((template) => {
+      const review =
+        reviewMap.get(template.templateId) || reviewMap.get(normalizeUrl(template.templateUrl));
+      const badgeClass = review
+        ? review.reviewDecision === "Pass"
+          ? "pass"
+          : review.isReviewed
+            ? "fix"
+            : "pending"
+        : "pending";
+      const badgeLabel = review
+        ? review.reviewDecision === "Pass"
+          ? "Pass"
+          : review.isReviewed
+            ? review.reviewDecision
+            : "Pending"
+        : "Unreviewed";
+
+      return `
+        <article class="template-item">
+          <div class="template-topline">
+            <span class="template-badge ${escapeHtml(badgeClass)}">${escapeHtml(badgeLabel)}</span>
+            <span class="metric-pill">GSC ${escapeHtml(formatNumberOrDash(template.gscClicks30d))}</span>
+            <span class="metric-pill">Organic ${escapeHtml(formatNumberOrDash(template.organicSessions))}</span>
+            <span class="metric-pill">Clones ${escapeHtml(
+              formatNumberOrDash(firstDefined(template.totalCloneCount30d, template.totalCloneCount)),
+            )}</span>
+          </div>
+          <div>
+            <h4>${escapeHtml(template.title || "Untitled template")}</h4>
+          </div>
+          <div class="meta-row">
+            ${template.templateId ? `<span class="metric-pill">Template ${escapeHtml(template.templateId)}</span>` : ""}
+            ${template.isGraduated ? `<span class="metric-pill">Graduated</span>` : `<span class="metric-pill">Not graduated</span>`}
+            ${template.templateUrl ? `<a class="metric-pill" href="${escapeHtml(
+              template.templateUrl,
+            )}" target="_blank" rel="noreferrer">Open template</a>` : ""}
+          </div>
+          <p class="muted">${escapeHtml(
+            review?.reviewNotes ||
+              review?.reviewDecision ||
+              "No review notes attached to this template yet.",
+          )}</p>
+        </article>
+      `;
+    })
+    .join("");
+}
+
+function syncFilterOptions() {
+  const categories = uniqueValues(state.campaigns.map((campaign) => campaign.category)).filter(Boolean);
+  elements.categoryFilter.innerHTML = [
+    `<option value="all">All categories</option>`,
+    ...categories.map(
+      (category) =>
+        `<option value="${escapeHtml(category)}" ${
+          state.filters.category === category ? "selected" : ""
+        }>${escapeHtml(category)}</option>`,
+    ),
+  ].join("");
+}
+
+function applyFilters(items, filters) {
+  return items.filter((campaign) => {
+    const haystack = [
+      campaign.campaignName,
+      campaign.category,
+      campaign.campaignCreationDate,
+      campaign.campaignId,
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+
+    const matchesSearch = !filters.search || haystack.includes(filters.search);
+    const matchesCategory =
+      filters.category === "all" || campaign.category === filters.category;
+    const matchesRisk = filters.risk === "all" || campaign.healthBucket === filters.risk;
+
+    return matchesSearch && matchesCategory && matchesRisk;
+  });
+}
+
+function summarizeCampaigns(items) {
+  return {
+    count: items.length,
+    generatedTemplates: sumNullable(items.map((item) => item.generatedTemplates)),
+    graduatedTemplates: sumNullable(items.map((item) => item.graduatedTemplates)),
+    gscClicks: sumNullable(items.map((item) => item.gscClicks)),
+    organicTraffic: sumNullable(items.map((item) => item.organicTraffic)),
+    totalTemplateClones: sumNullable(items.map((item) => item.totalTemplateClones)),
+    totalSignups: sumNullable(items.map((item) => item.totalSignups)),
+    estimatedAtRiskGraduates: sumNullable(items.map((item) => item.estimatedAtRiskGraduates)),
+  };
+}
+
+function renderCampaignSummary(campaign, topCritic) {
+  const segments = [
+    `${formatPercentOrDash(campaign.graduationRate)} graduation`,
+    `${formatPercentOrDash(campaign.estimatedCleanRate)} estimated clean graduates`,
+    `${formatPercentOrDash(campaign.graduateReviewCoverage)} graduate review coverage`,
+  ];
+
+  if (topCritic) {
+    segments.push(`${topCritic.label} is the top critic`);
+  }
+
+  return segments.join(" · ");
+}
+
+function renderDetailSummary(campaign) {
+  const riskyRate = ratio(campaign.estimatedAtRiskGraduates, campaign.graduatedTemplates);
+
+  if (campaign.healthBucket === "critical") {
+    return `${campaign.campaignName} is high risk because graduation or review cleanliness is weak. ${formatNumberOrDash(
+      campaign.estimatedAtRiskGraduates,
+    )} of its graduated templates are currently estimated to need fixes or escalation.`;
+  }
+
+  if (campaign.healthBucket === "watch") {
+    return `${campaign.campaignName} is workable but still exposed. The current model estimates ${formatPercentOrDash(
+      riskyRate,
+    )} of graduates may be review-risky, and coverage is not deep enough to relax yet.`;
+  }
+
+  return `${campaign.campaignName} is the healthiest campaign in view right now. Graduation is holding up and the synced review signals are not showing a major critic concentration.`;
+}
+
+function buildCampaignSuggestions(campaign) {
+  const suggestions = [];
+  const topCritics = campaign.topCritics.slice(0, 2);
+
+  if (campaign.graduateReviewCoverage !== null && campaign.graduateReviewCoverage < 0.2) {
+    suggestions.push(
+      "Increase graduate review sampling first. The model is carrying extra uncertainty because too few graduated templates have been reviewed.",
+    );
+  }
+
+  if (campaign.graduationRate !== null && campaign.graduationRate < 0.25) {
+    suggestions.push(
+      "Audit topic quality and publishability earlier. A low graduation rate means review fixes alone probably will not rescue this campaign.",
+    );
+  }
+
+  if (
+    firstDefined(campaign.gscClicks, 0) >= 20 &&
+    firstDefined(campaign.totalSignups, 0) === 0
+  ) {
+    suggestions.push(
+      "Inspect conversion intent after graduation. Search demand exists, but the templates are not converting into signups.",
+    );
+  }
+
+  topCritics.forEach((critic) => {
+    suggestions.push(critic.suggestion);
+  });
+
+  if (!suggestions.length) {
+    suggestions.push(
+      "Keep this campaign as the reference set. Its current performance and review profile can help define stronger graduation critics for weaker campaigns.",
+    );
+  }
+
+  return uniqueValues(suggestions).slice(0, 4);
+}
+
+function normalizeCampaignRow(row, index) {
+  const campaignCreationDate = normalizeDate(
+    firstNonEmpty([
+      row.campaignCreationDate,
+      row.campaign_created_at,
+      row["Campaign Creation Date"],
+      row["campaign_created_at"],
+    ]),
+  );
+  const campaignId =
+    firstNonEmpty([row.campaignId, row.campaign_id, row["Campaign ID"], row.id]) || "";
+  const campaignName =
+    firstNonEmpty([row.campaignName, row.campaign_name, row["Campaign Name"]]) || `Campaign ${index + 1}`;
+  const category = firstNonEmpty([row.category, row.Category, row.displayCampaign]) || "";
+
+  return {
+    id: `${campaignId || normalizeToken(campaignName) || "campaign"}-${campaignCreationDate || index}`,
+    campaignId,
+    campaignName,
+    campaignCreationDate,
+    category,
+    generatedTemplates: parseNumber(
+      firstNonEmpty([row.generatedTemplates, row.generated_templates, row["Generated Templates"]]),
+    ),
+    graduatedTemplates: parseNumber(
+      firstNonEmpty([
+        row.graduatedTemplates,
+        row.graduated_templates,
+        row["Graduated Templates"],
+      ]),
+    ),
+    trashedTemplates: parseNumber(
+      firstNonEmpty([
+        row.trashedTemplates,
+        row.trashed_templates,
+        row["Trashed Templates"],
+        row["Trashed Forms"],
+      ]),
+    ),
+    totalTemplateClones: parseNumber(
+      firstNonEmpty([
+        row.totalTemplateClones,
+        row.total_template_clones,
+        row.total_clone_count,
+        row["Total template clones"],
+        row["Total Clone"],
+      ]),
+    ),
+    totalSignups: parseNumber(
+      firstNonEmpty([
+        row.totalSignups,
+        row.total_signup_count,
+        row["Total Signups"],
+        row["Signups"],
+      ]),
+    ),
+    totalP30: parseNumber(
+      firstNonEmpty([row.totalP30, row.p30_count_30d, row["Total P30"], row["P30 Count"]]),
+    ),
+    organicTraffic: parseNumber(
+      firstNonEmpty([
+        row.organicTraffic,
+        row.organic_sessions,
+        row["Organic Sessions"],
+        row["Organic Traffic"],
+      ]),
+    ),
+    gscClicks: parseNumber(firstNonEmpty([row.gscClicks, row.gsc_clicks_30d, row["GSC Clicks"]])),
+  };
+}
+
+function normalizeTemplateRow(row, index) {
+  return {
+    id: `${firstNonEmpty([row.templateId, row.template_id, row.url, row.templateUrl, index])}`,
+    campaignId:
+      firstNonEmpty([row.campaignId, row.campaign_id, row["Campaign ID"]]) || "",
+    campaignName:
+      firstNonEmpty([row.campaignName, row.campaign_name, row["Campaign Name"]]) || "",
+    campaignCreationDate: normalizeDate(
+      firstNonEmpty([row.campaignCreationDate, row.campaignCreatedAt, row.campaign_created_at]),
+    ),
+    category: firstNonEmpty([row.category, row.displayCampaign]) || "",
+    templateId:
+      firstNonEmpty([row.templateId, row.template_id, row["Template ID"]]) || "",
+    templateUrl: firstNonEmpty([row.templateUrl, row.url, row["Template URL"]]) || "",
+    title:
+      firstNonEmpty([row.title, row.template_title, row["Template Title"], row.useCase]) ||
+      `Template ${index + 1}`,
+    isGraduated: parseBoolean(firstNonEmpty([row.isGraduated, row.is_graduated])),
+    isC30: parseBoolean(firstNonEmpty([row.isC30, row.is_c30])),
+    isO30: parseBoolean(firstNonEmpty([row.isO30, row.is_o30])),
+    gscClicks30d: parseNumber(firstNonEmpty([row.gscClicks30d, row.gsc_clicks_30d])),
+    organicSessions: parseNumber(firstNonEmpty([row.organicSessions, row.organic_sessions])),
+    totalCloneCount: parseNumber(firstNonEmpty([row.totalCloneCount, row.total_clone_count])),
+    totalCloneCount30d: parseNumber(
+      firstNonEmpty([row.totalCloneCount30d, row.total_clone_count_30d, row.clone_user_count_30d]),
+    ),
+    totalSignupCount: parseNumber(
+      firstNonEmpty([row.totalSignupCount, row.total_signup_count]),
+    ),
+    signupCount30d: parseNumber(
+      firstNonEmpty([row.signupCount30d, row.signup_count_in_30d]),
+    ),
+    p30Count30d: parseNumber(firstNonEmpty([row.p30Count30d, row.p30_count_30d])),
+  };
+}
+
+function normalizeReviewItem(item, index) {
+  const templateId = firstNonEmpty([item.templateId, item.id]) || "";
+  const templateUrl = firstNonEmpty([item.templateUrl, item.url]) || "";
+  const reviewDecision = normalizeReviewDecision(item.reviewDecision);
+
+  return {
+    id: firstNonEmpty([item.id, templateId, templateUrl]) || `review-${index + 1}`,
+    templateId,
+    templateUrl,
+    campaignName: firstNonEmpty([item.campaignName]) || "",
+    displayCampaign: firstNonEmpty([item.displayCampaign]) || "",
+    reviewDecision,
+    reviewNotes: firstNonEmpty([item.reviewNotes]) || "",
+    checks: normalizeChecks(item.checks || {}),
+    isReviewed: reviewDecision !== "Pending" || item.reviewStatus === "Reviewed",
+  };
+}
+
+function normalizeIncomingSnapshot(snapshot) {
+  if (!snapshot || typeof snapshot !== "object") {
+    return null;
+  }
+
+  if (Array.isArray(snapshot.campaignRows) && Array.isArray(snapshot.templateRows)) {
+    return {
+      version: 1,
+      meta: snapshot.meta || {},
+      campaignRows: snapshot.campaignRows,
+      templateRows: snapshot.templateRows,
+    };
+  }
+
+  const campaignRows = extractRowsFromPayload(snapshot.campaignPayload, isCampaignCandidate)
+    .map((row, index) => normalizeCampaignRow(row, index))
+    .filter((row) => row.campaignName || row.generatedTemplates !== null);
+  const templateRows = extractRowsFromPayload(snapshot.templatePayload, isTemplateCandidate)
+    .map((row, index) => normalizeTemplateRow(row, index))
+    .filter((row) => row.campaignName || row.templateId || row.templateUrl);
+
+  if (!campaignRows.length) {
+    return null;
+  }
+
+  return {
+    version: 1,
+    meta: {
+      syncedAt: snapshot.fetchedAt || new Date().toISOString(),
+      sourcePage: snapshot.sourcePage || "",
+      campaignEndpoint: snapshot.endpoints?.campaign || "",
+      templateEndpoint: snapshot.endpoints?.template || "",
+      startDate: readSearchParam(snapshot.endpoints?.campaign, "startDate"),
+      endDate: readSearchParam(snapshot.endpoints?.campaign, "endDate"),
+      phaseType: readSearchParam(snapshot.endpoints?.campaign, "phaseType") || "2",
+      campaignCount: campaignRows.length,
+      templateCount: templateRows.length,
+    },
+    campaignRows,
+    templateRows,
+  };
+}
+
+function normalizeIncomingReviewSnapshot(snapshot) {
+  if (!snapshot || typeof snapshot !== "object") {
+    return null;
+  }
+
+  if (Array.isArray(snapshot.items)) {
+    return {
+      version: snapshot.version || 1,
+      updatedAt: snapshot.updatedAt || new Date().toISOString(),
+      updatedBy: snapshot.updatedBy || "",
+      sourceFileName: snapshot.sourceFileName || "Review dashboard sync",
+      sourcePage: snapshot.sourcePage || "",
+      items: snapshot.items,
+    };
+  }
+
+  if (snapshot.reviewPayload && Array.isArray(snapshot.reviewPayload.items)) {
+    return {
+      version: 1,
+      updatedAt:
+        snapshot.reviewPayload.updatedAt || snapshot.fetchedAt || new Date().toISOString(),
+      updatedBy: snapshot.reviewPayload.updatedBy || "",
+      sourceFileName: snapshot.reviewPayload.sourceFileName || "Review dashboard sync",
+      sourcePage: snapshot.sourcePage || "",
+      items: snapshot.reviewPayload.items,
+    };
+  }
+
+  return null;
+}
+
+function persistBrowserSnapshot(campaignState) {
+  try {
+    window.localStorage.setItem(LOCAL_SNAPSHOT_KEY, JSON.stringify(campaignState));
+  } catch (error) {
+    // Ignore storage failures and keep the live snapshot in memory.
+  }
+}
+
+function readBrowserSnapshot() {
+  try {
+    const raw = window.localStorage.getItem(LOCAL_SNAPSHOT_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function persistReviewSnapshot(reviewState) {
+  try {
+    window.localStorage.setItem(LOCAL_REVIEW_SNAPSHOT_KEY, JSON.stringify(reviewState));
+  } catch (error) {
+    // Ignore storage failures and keep the live snapshot in memory.
+  }
+}
+
+function readReviewSnapshot() {
+  try {
+    const raw = window.localStorage.getItem(LOCAL_REVIEW_SNAPSHOT_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch (error) {
+    return null;
+  }
+}
+
+function normalizeChecks(checks) {
+  return Object.fromEntries(
+    Object.keys(CHECK_META).map((key) => {
+      const value = checks[key];
+      return [key, value === "Pass" || value === "Fail" ? value : "Pending"];
+    }),
+  );
+}
+
+function normalizeReviewDecision(value) {
+  return value === "Pass" || value === "Needs Fix" || value === "Escalate L2"
+    ? value
+    : "Pending";
+}
+
+function parseNumber(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const normalized = String(value).replace(/,/g, "").trim();
+  if (!normalized) return null;
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
+function parseBoolean(value) {
+  if (typeof value === "boolean") return value;
+  const normalized = String(value || "").trim().toLowerCase();
+  return normalized === "1" || normalized === "true" || normalized === "yes";
+}
+
+function normalizeDate(value) {
+  if (!value) return "";
+  const raw = String(value).trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(raw)) return raw;
+
+  const parsed = new Date(raw);
+  if (Number.isNaN(parsed.getTime())) return raw;
+
+  const year = parsed.getUTCFullYear();
+  const month = `${parsed.getUTCMonth() + 1}`.padStart(2, "0");
+  const day = `${parsed.getUTCDate()}`.padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
+function buildCampaignKey(campaign) {
+  return [
+    normalizeToken(campaign.campaignId),
+    normalizeToken(campaign.campaignName),
+    normalizeToken(campaign.campaignCreationDate),
+  ]
+    .filter(Boolean)
+    .join("|");
+}
+
+function normalizeToken(value) {
+  return String(value || "")
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
+}
+
+function normalizeUrl(value) {
+  return String(value || "")
+    .trim()
+    .replace(/\/+$/, "")
+    .toLowerCase();
+}
+
+function isCampaignCandidate(candidate) {
+  return Boolean(
+    candidate &&
+      typeof candidate === "object" &&
+      (Object.hasOwn(candidate, "campaign_name") ||
+        Object.hasOwn(candidate, "campaignName") ||
+        Object.hasOwn(candidate, "generated_templates") ||
+        Object.hasOwn(candidate, "Generated Templates")),
+  );
+}
+
+function isTemplateCandidate(candidate) {
+  return Boolean(
+    candidate &&
+      typeof candidate === "object" &&
+      (Object.hasOwn(candidate, "template_id") ||
+        Object.hasOwn(candidate, "templateId") ||
+        Object.hasOwn(candidate, "url") ||
+        Object.hasOwn(candidate, "gsc_clicks_30d")),
+  );
+}
+
+function extractRowsFromPayload(payload, matcher) {
+  if (Array.isArray(payload)) {
+    return payload.filter((item) => matcher(item));
+  }
+
+  const candidates = [];
+  collectMatchingArrays(payload, matcher, candidates);
+  if (!candidates.length) return [];
+  return candidates.sort((left, right) => right.length - left.length)[0];
+}
+
+function collectMatchingArrays(value, matcher, candidates) {
+  if (Array.isArray(value)) {
+    if (value.length && value.some((item) => matcher(item))) {
+      candidates.push(value);
+    }
+
+    value.forEach((item) => collectMatchingArrays(item, matcher, candidates));
+    return;
+  }
+
+  if (value && typeof value === "object") {
+    Object.values(value).forEach((child) => collectMatchingArrays(child, matcher, candidates));
+  }
+}
+
+function readSearchParam(url, key) {
+  if (!url) return "";
+
+  try {
+    return new URL(url).searchParams.get(key) || "";
+  } catch (error) {
+    return "";
+  }
+}
+
+function firstNonEmpty(values) {
+  return values.find((value) => value !== undefined && value !== null && String(value).trim() !== "");
+}
+
+function firstDefined(...values) {
+  return values.find((value) => value !== null && value !== undefined);
+}
+
+function sumNullable(values) {
+  const numbers = values.filter((value) => typeof value === "number" && Number.isFinite(value));
+  if (!numbers.length) return null;
+  return numbers.reduce((total, value) => total + value, 0);
+}
+
+function ratio(numerator, denominator) {
+  if (
+    numerator === null ||
+    numerator === undefined ||
+    denominator === null ||
+    denominator === undefined ||
+    denominator === 0
+  ) {
+    return null;
+  }
+
+  return numerator / denominator;
+}
+
+function uniqueValues(values) {
+  return [...new Set(values)];
+}
+
+function formatNumberOrDash(value) {
+  return value === null || value === undefined ? "—" : numberFormatter.format(value);
+}
+
+function formatPercentOrDash(value) {
+  return value === null || value === undefined ? "—" : percentFormatter.format(value);
+}
+
+function formatDateSafe(value) {
+  if (!value) return "—";
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? value : dateLongFormatter.format(parsed);
+}
+
+function formatDateTimeSafe(value) {
+  if (!value) return "—";
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return value;
+
+  return `${dateLongFormatter.format(parsed)} ${parsed.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+  })}`;
+}
+
+function shortCampaignLabel(campaign) {
+  const date = campaign.campaignCreationDate ? campaign.campaignCreationDate.slice(5) : "";
+  return `${campaign.category === "ai_pool" ? "AI" : "UGC"} ${date}`;
+}
+
+function titleCase(value) {
+  return String(value || "")
+    .split(/[\s_-]+/)
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function fetchJson(path) {
+  return fetch(path).then((response) => {
+    if (!response.ok) {
+      throw new Error(`${path} failed with ${response.status}`);
+    }
+
+    return response.json();
+  });
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
+
+function computeCorrelation(pairs) {
+  if (!pairs.length) return null;
+
+  const xs = pairs.map(([x]) => x);
+  const ys = pairs.map(([, y]) => y);
+  const xMean = xs.reduce((total, value) => total + value, 0) / xs.length;
+  const yMean = ys.reduce((total, value) => total + value, 0) / ys.length;
+
+  const numerator = pairs.reduce(
+    (total, [x, y]) => total + (x - xMean) * (y - yMean),
+    0,
+  );
+  const left = Math.sqrt(xs.reduce((total, value) => total + (value - xMean) ** 2, 0));
+  const right = Math.sqrt(ys.reduce((total, value) => total + (value - yMean) ** 2, 0));
+
+  if (!left || !right) return null;
+  return numerator / (left * right);
+}
+
+function readEmbeddedPayload() {
+  return window.__ADCRAFT_EMBEDDED_PAYLOAD__ || null;
+}
+
+function cloneEmbeddedPayload() {
+  if (!EMBEDDED_PAYLOAD) return null;
+
+  if (typeof structuredClone === "function") {
+    return structuredClone(EMBEDDED_PAYLOAD);
+  }
+
+  return JSON.parse(JSON.stringify(EMBEDDED_PAYLOAD));
+}
+
+function inferReviewMode(reviewState) {
+  return reviewState?.sourcePage ? "browser" : "sample";
+}
+
+function describeCorrelation(value) {
+  if (value === null) return "not available yet";
+  if (value >= 0.5) return "strongly positive";
+  if (value >= 0.2) return "moderately positive";
+  if (value > -0.2) return "weak";
+  if (value > -0.5) return "moderately negative";
+  return "strongly negative";
+}
+
+function templateRiskWeight(template, reviews) {
+  const review = reviews.find(
+    (entry) =>
+      (entry.templateId && entry.templateId === template.templateId) ||
+      (entry.templateUrl && normalizeUrl(entry.templateUrl) === normalizeUrl(template.templateUrl)),
+  );
+
+  if (!review) return 1;
+  if (!review.isReviewed) return 2;
+  if (review.reviewDecision === "Pass") return 0;
+  return 3;
+}
+
+function createBookmarkletHref(appOrigin) {
+  const script = `(async()=>{const APP=${JSON.stringify(
+    appOrigin,
+  )};const ORIGIN=new URL(APP).origin;const API_URL=new URL("/api/live-sync",APP).toString();const say=(message)=>alert("Adcraft Live Sync\\n\\n"+message);const dashboardWindow=window.open(APP,"_blank");try{const urls=performance.getEntriesByType("resource").map((entry)=>entry.name);const campaignUrl=[...new Set(urls.filter((url)=>url.includes("/data-dashboards/jot-analytics/server/adcraft-dashboard/ugc/campaign-performance/details?")))].pop();if(!campaignUrl){throw new Error("Open the Campaign Details page, wait for the table to load, then run this bookmarklet.");}const params=new URL(campaignUrl).searchParams;const phaseType=params.get("phaseType")||"2";const startDate=params.get("startDate");const endDate=params.get("endDate");if(!startDate||!endDate){throw new Error("Could not detect the current dashboard date range.");}const templateUrl=location.origin+"/data-dashboards/jot-analytics/server/adcraft-dashboard/ugc/overview/details?phaseType="+encodeURIComponent(phaseType)+"&startDate="+encodeURIComponent(startDate)+"&endDate="+encodeURIComponent(endDate)+"&granularity=daily";const [campaignPayload,templatePayload]=await Promise.all([fetch(campaignUrl,{credentials:"include",cache:"no-store"}).then((response)=>{if(!response.ok){throw new Error("Campaign endpoint failed ("+response.status+")");}return response.json();}),fetch(templateUrl,{credentials:"include",cache:"no-store"}).then((response)=>{if(!response.ok){throw new Error("Template endpoint failed ("+response.status+")");}return response.json();})]);const snapshot={fetchedAt:new Date().toISOString(),sourcePage:location.href,endpoints:{campaign:campaignUrl,template:templateUrl},campaignPayload,templatePayload};if(dashboardWindow){const deliver=(attempt=0)=>{try{dashboardWindow.postMessage({type:"adcraft-live-sync-snapshot",payload:snapshot},ORIGIN);}catch(error){}if(attempt<8){setTimeout(()=>deliver(attempt+1),500);}};deliver();}let savedShared=false;try{const response=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(snapshot)});if(response.ok){savedShared=true;}}catch(error){}say(savedShared?"Live data synced to the dashboard and saved to shared storage.":"Live data sent to the dashboard window. If shared storage is not configured yet, this browser view will still work.");}catch(error){say(error.message||String(error));}})();`;
+  return `javascript:${script}`;
+}
+
+function createReviewBookmarkletHref(appOrigin) {
+  const script = `(async()=>{const APP=${JSON.stringify(
+    appOrigin,
+  )};const ORIGIN=new URL(APP).origin;const say=(message)=>alert("Review Sync\\n\\n"+message);const dashboardWindow=window.open(APP,"_blank");try{const apiUrl=new URL("/api/data",location.href).toString();const response=await fetch(apiUrl,{credentials:"include",cache:"no-store"});if(!response.ok){throw new Error("Review API failed ("+response.status+")");}const reviewPayload=await response.json();if(!Array.isArray(reviewPayload.items)){throw new Error("This page did not return a review dataset.");}const snapshot={fetchedAt:new Date().toISOString(),sourcePage:location.href,apiUrl,reviewPayload};if(dashboardWindow){const deliver=(attempt=0)=>{try{dashboardWindow.postMessage({type:"adcraft-review-sync-snapshot",payload:snapshot},ORIGIN);}catch(error){}if(attempt<8){setTimeout(()=>deliver(attempt+1),500);}};deliver();}say("Review data sent to the dashboard window. Refresh the board if you want to compare another review snapshot.");}catch(error){say(error.message||String(error));}})();`;
+  return `javascript:${script}`;
+}
+
+</script>
+  </body>
+</html>
